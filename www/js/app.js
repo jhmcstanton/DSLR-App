@@ -58,7 +58,6 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
-
   .state('app.single', {
     url: '/playlists/:playlistId',
     views: {
@@ -67,6 +66,24 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         controller: 'PlaylistCtrl'
       }
     }
+  })
+  .state('app.keyframes', {
+    url: '/keyframe_list',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/keyframe_list.html',
+        controller: 'KeyframeslistCtrl'
+      }
+    }  
+  })
+ .state('app.single_keyframe', {
+    url: '/add_keyframe',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/add_keyframe.html',
+        controller: 'KeyframeslistCtrl'
+      }
+    }  
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/playlists');

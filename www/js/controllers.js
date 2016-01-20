@@ -53,4 +53,9 @@ angular.module('starter.controllers', [])
 })
 
 .controller('PlaylistCtrl', function($scope, $stateParams) {
+})
+
+.controller('KeyframeslistCtrl', function($scope, $stateParams){
+  $scope.keyframes = [
+  ];
 });
