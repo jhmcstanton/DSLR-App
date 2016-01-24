@@ -1,4 +1,4 @@
-angular.module('dslr.controllers', [])
+angular.module('dslr.controllers', ['dslr.services'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
 
@@ -55,23 +55,19 @@ angular.module('dslr.controllers', [])
 .controller('PlaylistCtrl', function($scope, $stateParams) {
 })
 
-.controller('KeyframeListCtrl', function($scope, $stateParams, $ionicPopup, $state){
-  $scope.keyframes = [
-  ];
-  $scope.newFrame = {};
+.controller('KeyframeListCtrl', function($scope, $stateParams, $ionicPopup, $state, KeyframeService){
+  $scope.keyframes = KeyframeService.getKeyframes();
   
   $scope.addKeyframe = function() {
-      $state.go('app.single_keyframe');
+      $state.go('app.single_keyframe');      
   };
 })
 
-.controller('AddKeyframeCtrl', function($scope, $stateParams, $state, $ionicPopup){
-    $ionicPopup.alert({
-	title: "test",
-	template:  "123asdc"
-    });
+.controller('AddKeyframeCtrl', function($scope, $stateParams, $state, $ionicPopup, KeyframeService){
+    $scope.newFrame = {};
     $scope.addKeyframe = function(){
 	var parsedKeyframe = {};
+	console.log('for loop');
 	for(key in $scope.newFrame){
 	    parsedKeyframe[key] = Number.parseInt($scope.newFrame[key]);
 	}
@@ -80,6 +76,8 @@ angular.module('dslr.controllers', [])
 	   !Number.isNaN(parsedKeyframe.position) &&
 	   !Number.isNaN(parsedKeyframe.panAngle) &&
 	   !Number.isNaN(parsedKeyframe.tiltAngle)){
+
+	    KeyframeService.appendKeyframe(parsedKeyframe);
             $state.go('app.keyframes');
 	}else {
 	    $ionicPopup.alert({

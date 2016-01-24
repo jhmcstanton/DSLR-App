@@ -3,7 +3,10 @@
     <div class="list list-inset">
       <ion-list class="list card">
 	<ion-item ng-repeat="keyframe in keyframes" href="#/app/keyframes/{{keyframeid}}">
-          {{keyframe.time}}
+          Time: {{keyframe.time}} </br>
+	  Position: {{keyframe.position}} </br>
+	  Pan Angle: {{keyframe.panAngle}} </br>
+	  Tilt Angle: {{keyframe.tiltAngle}} </br>
 	</ion-item>
       </ion-list>
       <button class="button button-block button-calm" ng-click="addKeyframe()">
