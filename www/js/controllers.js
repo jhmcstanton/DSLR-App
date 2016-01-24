@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module('dslr.controllers', [])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
 
@@ -55,7 +55,37 @@ angular.module('starter.controllers', [])
 .controller('PlaylistCtrl', function($scope, $stateParams) {
 })
 
-.controller('KeyframeslistCtrl', function($scope, $stateParams){
+.controller('KeyframeListCtrl', function($scope, $stateParams, $ionicPopup, $state){
   $scope.keyframes = [
   ];
+  $scope.newFrame = {};
+  
+  $scope.addKeyframe = function() {
+      $state.go('app.single_keyframe');
+  };
+})
+
+.controller('AddKeyframeCtrl', function($scope, $stateParams, $state, $ionicPopup){
+    $ionicPopup.alert({
+	title: "test",
+	template:  "123asdc"
+    });
+    $scope.addKeyframe = function(){
+	var parsedKeyframe = {};
+	for(key in $scope.newFrame){
+	    parsedKeyframe[key] = Number.parseInt($scope.newFrame[key]);
+	}
+	
+	if(!Number.isNaN(parsedKeyframe.time) &&
+	   !Number.isNaN(parsedKeyframe.position) &&
+	   !Number.isNaN(parsedKeyframe.panAngle) &&
+	   !Number.isNaN(parsedKeyframe.tiltAngle)){
+            $state.go('app.keyframes');
+	}else {
+	    $ionicPopup.alert({
+		title: "Malformed Keyframe",
+		template:  "All fields must be numeric"
+	    });
+	}     
+    }; 
 });

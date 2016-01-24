@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers'])
+angular.module('dslr', ['ionic', 'dslr.controllers'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -72,7 +72,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     views: {
       'menuContent': {
         templateUrl: 'templates/keyframe_list.html',
-        controller: 'KeyframeslistCtrl'
+        controller: 'KeyframeListCtrl'
       }
     }  
   })
@@ -81,7 +81,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     views: {
       'menuContent': {
         templateUrl: 'templates/add_keyframe.html',
-        controller: 'KeyframeslistCtrl'
+        controller: 'AddKeyframeCtrl'
       }
     }  
   });

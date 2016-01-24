@@ -1,13 +1,15 @@
 <ion-view view-title="Keyframes">
   <ion-content>
-    <ion-list class="list card">
-      <ion-item ng-repeat="keyframe in keyframes" href="#/app/keyframes/{{keyframeid}}">
-        {{keyframe.time}}
-      </ion-item>
-    </ion-list>
-    <button class="button button-calm" href="#/app/add_keyframe">
-      Add KeyFrame
-    </button>
+    <div class="list list-inset">
+      <ion-list class="list card">
+	<ion-item ng-repeat="keyframe in keyframes" href="#/app/keyframes/{{keyframeid}}">
+          {{keyframe.time}}
+	</ion-item>
+      </ion-list>
+      <button class="button button-block button-calm" ng-click="addKeyframe()">
+	Add KeyFrame
+      </button>
+    </div>
   </ion-content>
 </ion-view>
 
