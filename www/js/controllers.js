@@ -10,6 +10,9 @@ angular.module('dslr.controllers', ['dslr.services'])
 	$scope.debugLog = '';
 	textarea.style.height = 0;
     };
+    $scope.toggleDebug = function(){
+	$scope.debug = !$scope.debug;
+    };
     
     var updateLog = function() {
 	if($scope.debug){
@@ -20,7 +23,7 @@ angular.module('dslr.controllers', ['dslr.services'])
 	    $scope.debugLog += 'Not debugging right now.\n';
 	}
 	textarea.style.height = textarea.scrollHeight + "px";
-    }
+    };
 
     ionic.on('click', updateLog, document);
     ionic.on('swipeleft', updateLog, document);
@@ -49,6 +52,7 @@ angular.module('dslr.controllers', ['dslr.services'])
 	   !Number.isNaN(parsedKeyframe.tiltAngle)){
 
 	    KeyframeService.appendKeyframe(parsedKeyframe);
+	    $scope.newFrame = {};
             $state.go('app.keyframes');
 	}else {
 	    $ionicPopup.alert({
