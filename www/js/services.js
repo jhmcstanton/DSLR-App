@@ -112,7 +112,7 @@ angular.module('dslr.services', [])
 	    });
         },
 	sendMsg: function(msg){
-	    bluetoothSerial.write(msg, function{} {
+	    bluetoothSerial.write(msg, function() {
 		return true;
 	    }, function() {
 		return false;
