@@ -2,12 +2,22 @@ angular.module('dslr.controllers', ['dslr.services'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout, BluetoothService) {
     $scope.debugLog = '';
-    document.addEventListener('swipeleft', function() {
-	BluetoothService.getDebugLines().forEach(function(line){
-	    $scope.debugLog += line + '\n';
-	});
-    }, false); 
+    $scope.debug    = false;
+    
+    var updateLog = function() {
+	if($scope.debug){
+	    BluetoothService.getDebugLines().forEach(function(line){
+		$scope.debugLog += line + '\n';
+	    });
+	} else { // this should be pulled eventually
+	    $scope.debugLog += 'Not debugging right now.\n';
+	}
+	textarea = document.getElementById("logRegion");
+	textarea.style.height = textarea.scrollHeight + "px";
+    }
 
+    ionic.on('click', updateLog, document);
+    ionic.on('swipeleft', updateLog, document);
 })
 
 .controller('KeyframeListCtrl', function($scope, $stateParams, $ionicPopup, $state, KeyframeService){

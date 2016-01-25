@@ -8,17 +8,30 @@
         <button class="button button-icon button-clear ion-navicon" menu-toggle="right">
         </button>
       </ion-nav-buttons>
+      <ion-nav-buttons side="left">
+        <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+        </button>
+      </ion-nav-buttons>
     </ion-nav-bar>
     <ion-nav-view name="menuContent"></ion-nav-view>
   </ion-side-menu-content>
 
-  <ion-side-menu side="right">
+  <ion-side-menu side="left">
     <ion-header-bar class="bar-stable">
-      <h1 class="title">Debug Info</h1>
+      <h1 class="title">Settings</h1>
     </ion-header-bar>
     <ion-content>
-      <textarea ng-model="debugLog" style="margin-left:auto; margin-right:auto; display:block; width:90%; height:90%">
-      </textarea>
+      <ion-toggle ng-model="debug" toggle-class="toggle-calm">Debug</ion-toggle>
+    </ion-content>
+  </ion-side-menu>
+
+  <ion-side-menu side="right">
+    <ion-header-bar class="bar-stable">
+      <h1 class="title">Carriage Debug Info</h1>
+    </ion-header-bar>
+    <ion-content>
+       <textarea ng-model="debugLog" id="logRegion" style="margin-left:auto; margin-right:auto; display:block; width:90%; overflow:hidden">
+       </textarea>
     </ion-content>
   </ion-side-menu>
 </ion-side-menus>
