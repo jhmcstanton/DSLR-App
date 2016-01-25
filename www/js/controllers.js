@@ -1,8 +1,15 @@
 angular.module('dslr.controllers', ['dslr.services'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout, BluetoothService) {
+    var textarea = document.getElementById("logRegion");
+
     $scope.debugLog = '';
     $scope.debug    = false;
+   
+    $scope.clearDebugLog = function(){
+	$scope.debugLog = '';
+	textarea.style.height = 0;
+    };
     
     var updateLog = function() {
 	if($scope.debug){
@@ -12,7 +19,6 @@ angular.module('dslr.controllers', ['dslr.services'])
 	} else { // this should be pulled eventually
 	    $scope.debugLog += 'Not debugging right now.\n';
 	}
-	textarea = document.getElementById("logRegion");
 	textarea.style.height = textarea.scrollHeight + "px";
     }
 
