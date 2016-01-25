@@ -9,5 +9,15 @@ angular.module('dslr.services', [])
 	getKeyframes : function(){
 	    return keyframes;
 	},
+	buildKeyframeBuffer: function(frames){
+	    buffer = frames.length.toString() + "|";
+	    frames.forEach(function(frame){
+		buffer += frame.time + "|" + 
+		    frame.position   + "|" + 
+		    frame.panAngle   + "|" + 
+		    frame.titlAngle  + "|"; 
+	    });
+	    return buffer; 
+	},
     };
 });
