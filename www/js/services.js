@@ -104,11 +104,19 @@ angular.module('dslr.services', [])
                 template: "Unable to subscribe to debug output from carriage"
 	    });
 	},
-        onDeviceList: function() {
-	    
-	},
         refreshDeviceList: function() {
-            bluetoothSerial.list(this.onDeviceList, this.onError);
+            bluetoothSerial.list(function(devices) {
+		return devices;
+	    }, function() { 
+		return false;
+	    });
         },
+	sendMsg: function(msg){
+	    bluetoothSerial.write(msg, function{} {
+		return true;
+	    }, function() {
+		return false;
+	    });
+	}
     };
 });
