@@ -40,9 +40,10 @@ angular.module('dslr.controllers', ['dslr.services'])
     ionic.on('swipeleft', updateLog, document);
 })
 
-.controller('KeyframeListCtrl', function($scope, $stateParams, $ionicPopup, $state, KeyframeService, Debug){
+.controller('KeyframeListCtrl', function($scope, $q, $stateParams, $ionicPopup, $state, KeyframeService, Debug, BluetoothService){
     $scope.keyframes = []; //KeyframeService.getKeyframes();
     $scope.ready = false; 
+    $scope.paired   = false;
 
     $scope.totalDuration = 0;
     
@@ -52,6 +53,19 @@ angular.module('dslr.controllers', ['dslr.services'])
 		title    : 'Frames Sent!',
 		template : 'Buffer: ' + KeyframeService.buildKeyframeBuffer($scope.keyframes)
 	    });
+	}
+    };
+    $scope.pairCarriage = function(){
+	alert('going to discover');
+	try {
+	    var devices = BluetoothService.discover();
+	    alert('discovered');
+	    alert('length' + devices.length);
+	    for(device in devices){
+		alert(device);
+	    }
+	} catch (err){
+	    alert('caught : ' + err);
 	}
     };
   

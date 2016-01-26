@@ -68,6 +68,7 @@ angular.module('dslr.services', ['ngCordova'])
     var dslrMAC = '';     
     var rcvCarriageDebug = false; // sentinel to subscribe to carriage debug feed
     var debugLines = [];
+    var paired = false; 
     return {
 	enabled: function(){
 	    return $cordovaBluetoothSerial.isEnabled(function(){
@@ -78,8 +79,8 @@ angular.module('dslr.services', ['ngCordova'])
 	},
 	initialize: function(rcvDebug) {
 	    if (!initialized){
-		if (!bluetoothSerial.isEnabled){ 
-		    bluetoothSerial.enable(function(){
+		if (!$cordovaBluetoothSerial.isEnabled){ 
+		    $cordovaBluetoothSerial.enable(function(){
 			//success callback
 			document.addEventListener('deviceready', function(){
 			    initialized = true;
@@ -98,19 +99,32 @@ angular.module('dslr.services', ['ngCordova'])
 	    //macAddress needs to be changed to dslrMAC *AND* found dynamically
 	    // IOS + WP do *not* support connecting to bluetooth devices with MAC or the discover unpaired function
 	    // that will need to be accounted for when we get there
-	    if(ionic.Platform.platform() === 'Android'){
-		bluetoothSerial.discoverUnpaired(function(devices){
+	    if(ionic.Platform.isAndroid()){
+		alert('in android');
+		for(func in $cordovaBluetoothSerial){
+		    alert(typeof $cordovaBluetoothSerial[func] + ': ' + func);
+		}
+		alert('using bs');
+		alert($cordovaBluetoothSerial.discoverUnpaired);
+		alert('usable?');
+		return $cordovaBluetoothSerial.discoverUnpaired(function(devices){
+		    alert('success');
 		    return devices;
-		}, function(){
+		}, function(_){
+		    alert('fail');
 		    return false; 
 		});
+	    } else {
+		alert('Platform not supported yet');
+		return [];
 	    }
-            //bluetoothSerial.connect(macAddress, this.onConnect, this.onDisconnect);
+            //$cordovaBluetoothSerial.connect(macAddress, this.onConnect, this.onDisconnect);
 	},
 	// connection string is either a MAC address (Android or WP) or a uuid (ios)
 	// either way the call is the same
 	connect: function(connectionString) {
-	    bluetoothSerial.connect(connectionString, function(){
+	    $cordovaBluetoothSerial.connect(connectionString, function(){
+		paired = true; 
 		this.onConnect();
 		return true; // successful connection
 	    }, function() {
@@ -120,8 +134,9 @@ angular.module('dslr.services', ['ngCordova'])
 	disconnect: function(){
 	    rcvCarriageDebug = false;
 	    initialized      = false;
+	    paired           = false; 
 	    debugLines       = [];
-	    bluetoothSerial.disconnect(function(){ 
+	    $cordovaBluetoothSerial.disconnect(function(){ 
 		return true; // successfully disconnected		
 	    }, function() {
 		return false;
@@ -130,7 +145,7 @@ angular.module('dslr.services', ['ngCordova'])
 	onConnect: function() {
 	    // subscriptions are only needed if the carriage starts sending messages back
 	    if(rcvCarriageDebug){
-		bluetoothSerial.subscribe("\n", this.onMessage, this.subscribeFailed); 
+		$cordovaBluetoothSerial.subscribe("\n", this.onMessage, this.subscribeFailed); 
 	    }
 	}, 
 	// updates internal array of debug lines with new info whenever it is received
@@ -151,14 +166,14 @@ angular.module('dslr.services', ['ngCordova'])
 	    });
 	},
         refreshDeviceList: function() {
-            bluetoothSerial.list(function(devices) {
+            $cordovaBluetoothSerial.list(function(devices) {
 		return devices;
 	    }, function() { 
 		return false;
 	    });
         },
 	sendMsg: function(msg){
-	    bluetoothSerial.write(msg, function() {
+	    $cordovaBluetoothSerial.write(msg, function() {
 		return true;
 	    }, function() {
 		return false;
