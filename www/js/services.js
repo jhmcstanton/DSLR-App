@@ -15,9 +15,8 @@ angular.module('dslr.services', ['ngCordova'])
 	},
 	appendKeyframe : function(keyframe){
 	    keyframes.push(keyframe);
-	    keyframes.sort(function(frame1, frame2){
-		return frame1.time > frame2.time
-	    });
+
+	    keyframes = $filter('orderBy')(keyframes, 'time');
 	},
 	getKeyframes : function(){
 	    return keyframes;

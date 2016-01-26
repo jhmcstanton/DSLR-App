@@ -41,7 +41,7 @@ angular.module('dslr.controllers', ['dslr.services'])
 })
 
 .controller('KeyframeListCtrl', function($scope, $stateParams, $ionicPopup, $state, KeyframeService, Debug){
-    $scope.keyframes = KeyframeService.getKeyframes();
+    $scope.keyframes = []; //KeyframeService.getKeyframes();
     $scope.ready = false; 
 
     $scope.totalDuration = 0;
@@ -58,6 +58,12 @@ angular.module('dslr.controllers', ['dslr.services'])
   $scope.addKeyframe = function() {
       $state.go('app.single_keyframe');      
   };
+
+  $scope.$watch(function(){
+      return KeyframeService.getKeyframes();
+  }, function(newframes, _){
+      $scope.keyframes = newframes;
+  }); // these 2 watches might be easily combined
 
   // watch the length of the keyframes - first function is the watching function, second is the comparator
   $scope.$watch(function(){
@@ -78,7 +84,6 @@ angular.module('dslr.controllers', ['dslr.services'])
     $scope.newFrame = {};
     $scope.addKeyframe = function(){
 	var parsedKeyframe = {};
-	console.log('for loop');
 	for(key in $scope.newFrame){
 	    parsedKeyframe[key] = Number.parseInt($scope.newFrame[key]);
 	}
