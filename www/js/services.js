@@ -1,4 +1,4 @@
-angular.module('dslr.services', [])
+angular.module('dslr.services', ['ngCordova'])
 
 .service('KeyframeService', function($q){
     var keyframes   = [];
@@ -15,21 +15,55 @@ angular.module('dslr.services', [])
 		buffer += frame.time + "|" + 
 		    frame.position   + "|" + 
 		    frame.panAngle   + "|" + 
-		    frame.titlAngle  + "|"; 
+		    frame.tiltAngle  + "|"; 
 	    });
 	    return buffer; 
 	},
     };
 })
 
+// Some helper functionality for debugging the app in general
+.service('Debug', function() {
+    var debug = true;
+    var debugLog = '';
+    return {
+	setDebug : function(setting){
+	    debug = setting;
+	},
+	toggleDebug : function(){
+	    debug = !debug;
+	},
+	getDebug : function() {
+	    return debug
+	},
+	getDebugLog : function() {
+	    return debugLog;
+	},
+	appendLog : function(log) {
+	    debugLog += log + '\n';
+	},
+	clearLog  : function(){
+	    debugLog = '';
+	}
+    };
+})
+
 // Allows arbitrary controllers to perform bluetooth actions
-.service('BluetoothService', function($ionicPopup){
+.service('BluetoothService', function($ionicPopup, $cordovaBluetoothSerial){
+//    var bluetoothSerial = ngCordova.plugins.bluetoothSerial;
     // initialized is for us to keep track of state, not the bluetooth controller itself
     var initialized = false;
     var dslrMAC = '';     
     var rcvCarriageDebug = false; // sentinel to subscribe to carriage debug feed
     var debugLines = [];
     return {
+	enabled: function(){
+	    return $cordovaBluetoothSerial.isEnabled(function(){
+		return true;
+	    }, function(){
+		return false;
+	    });
+	},
 	initialize: function(rcvDebug) {
 	    if (!initialized){
 		if (!bluetoothSerial.isEnabled){ 
@@ -52,7 +86,7 @@ angular.module('dslr.services', [])
 	    //macAddress needs to be changed to dslrMAC *AND* found dynamically
 	    // IOS + WP do *not* support connecting to bluetooth devices with MAC or the discover unpaired function
 	    // that will need to be accounted for when we get there
-	    if(device.platform === 'Android'){
+	    if(ionic.Platform.platform() === 'Android'){
 		bluetoothSerial.discoverUnpaired(function(devices){
 		    return devices;
 		}, function(){

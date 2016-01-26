@@ -8,9 +8,13 @@
 	  Pan Angle: {{keyframe.panAngle}} </br>
 	  Tilt Angle: {{keyframe.tiltAngle}} </br>
 	</ion-item>
+	<ion-item>Total Duration: {{totalDuration}}</ion-item>
       </ion-list>
       <button class="button button-block button-calm" ng-click="addKeyframe()">
-	Add KeyFrame
+	Add Keyframe
+      </button>      
+      <button ng-disabled="!ready" class="button button-block button-calm" ng-click="send()">
+	Send Keyframes!
       </button>
     </div>
   </ion-content>

@@ -6,7 +6,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('dslr', ['ionic', 'dslr.controllers'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $ionicPopup) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
