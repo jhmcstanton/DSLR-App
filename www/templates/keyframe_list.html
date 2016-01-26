@@ -2,7 +2,7 @@
   <ion-content>
     <div class="list list-inset">
       <ion-list class="list card">
-	<ion-item ng-repeat="keyframe in keyframes" href="#/app/keyframes/{{keyframeid}}">
+	<ion-item ng-repeat="keyframe in keyframes | orderBy : keyframe.time : false" href="#/app/keyframes/{{keyframeid}}">
           Time: {{keyframe.time}} </br>
 	  Position: {{keyframe.position}} </br>
 	  Pan Angle: {{keyframe.panAngle}} </br>

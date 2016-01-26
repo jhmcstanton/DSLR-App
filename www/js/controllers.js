@@ -88,9 +88,16 @@ angular.module('dslr.controllers', ['dslr.services'])
 	   !Number.isNaN(parsedKeyframe.panAngle) &&
 	   !Number.isNaN(parsedKeyframe.tiltAngle)){
 
-	    KeyframeService.appendKeyframe(parsedKeyframe);
-	    $scope.newFrame = {};
-            $state.go('app.keyframes');
+	    if(KeyframeService.uniqueTime(parsedKeyframe)){		
+		KeyframeService.appendKeyframe(parsedKeyframe);
+		$scope.newFrame = {};
+		$state.go('app.keyframes');
+	    } else {
+		$ionicPopup.alert({
+		    title : 'Malformed Keyframe!',
+		    template : 'This frame time clashes with another'
+		});
+	    }
 	}else {
 	    $ionicPopup.alert({
 		title: "Malformed Keyframe",

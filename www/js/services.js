@@ -1,10 +1,23 @@
 angular.module('dslr.services', ['ngCordova'])
 
-.service('KeyframeService', function($q){
+.service('KeyframeService', function($q, $filter){
     var keyframes   = [];
     return {
+	// checks to make sure that a newframe does not clash with another frame time
+	uniqueTime : function(newFrame){
+	    for(frame in keyframes){
+		if(frame.time === newFrame.time){
+		    alert('AAAAAY');
+		    return false;
+		}
+	    }
+	    return true;
+	},
 	appendKeyframe : function(keyframe){
 	    keyframes.push(keyframe);
+	    keyframes.sort(function(frame1, frame2){
+		return frame1.time > frame2.time
+	    });
 	},
 	getKeyframes : function(){
 	    return keyframes;
