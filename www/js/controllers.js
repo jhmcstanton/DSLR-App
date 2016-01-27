@@ -42,11 +42,15 @@ angular.module('dslr.controllers', ['dslr.services'])
 
 .controller('KeyframeListCtrl', function($scope, $q, $stateParams, $ionicPopup, $state, KeyframeService, Debug, BluetoothService){
     $scope.keyframes = []; //KeyframeService.getKeyframes();
-    $scope.ready = false; 
+
     $scope.paired   = false;
 
     $scope.totalDuration = 0;
     
+    $scope.ready = function(){
+	return $scope.keyframes.length >= 2; // && $scope.paired && BluetoothService.enabled 
+    };
+
     $scope.send = function(){ 
 	if(Debug.getDebug()){
 	    $ionicPopup.alert({
@@ -85,10 +89,8 @@ angular.module('dslr.controllers', ['dslr.services'])
   }, function(newLength, _) {
       if(newLength >= 2){ // minimum of 2 frames are required to transmit
 	  $scope.totalDuration = $scope.keyframes[newLength - 1].time - $scope.keyframes[0].time;
-	  $scope.ready = true;
       } else { 
 	  $scope.totalDuration = 0;
-	  $scope.ready = false;
       }
   });
 
