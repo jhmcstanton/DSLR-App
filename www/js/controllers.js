@@ -3,8 +3,10 @@ angular.module('dslr.controllers', ['dslr.services'])
 .controller('AppCtrl', function($scope, $ionicModal, $timeout, BluetoothService, $ionicPopup, Debug) {
     var textarea = document.getElementById("logRegion");
 
+    $scope.debug    = false; 
     $scope.debugLog = Debug.getDebugLog();
-    
+    $scope.bluetoothEnabled = false; 
+
 /*    if(ionic.Platform.isIOS() || ionic.Platform.isAndroid()){
 	$scope.bluetoothEnabled = BluetoothService.enabled();
     }*/
@@ -22,7 +24,10 @@ angular.module('dslr.controllers', ['dslr.services'])
 	alert($scope.bluetoothEnabled);
 	alert('LAST');
     };
-    $scope.toggleDebug = Debug.toggleDebug;
+    $scope.toggleDebug = function() {
+	Debug.toggleDebug();	
+	$scope.debug = Debug.getDebug();
+    };
     
     var updateLog = function() {
 	if(Debug.getDebug()){
