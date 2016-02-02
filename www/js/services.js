@@ -7,7 +7,6 @@ angular.module('dslr.services', ['ngCordova'])
 	uniqueTime : function(newFrame){
 	    for(frame in keyframes){
 		if(frame.time === newFrame.time){
-		    alert('AAAAAY');
 		    return false;
 		}
 	    }
@@ -61,15 +60,21 @@ angular.module('dslr.services', ['ngCordova'])
 })
 
 // Allows arbitrary controllers to perform bluetooth actions
-.service('BluetoothService', function($ionicPopup, $cordovaBluetoothSerial){
+.service('BluetoothService', function($ionicPopup, $cordovaBluetoothSerial, $ionicPlatform){
 //    var bluetoothSerial = ngCordova.plugins.bluetoothSerial;
-    // initialized is for us to keep track of state, not the bluetooth controller itself
+    // initialized is for us to keep track of library state, not the bluetooth controller itself
     var initialized = false;
     var dslrMAC = '';     
     var rcvCarriageDebug = false; // sentinel to subscribe to carriage debug feed
     var debugLines = [];
     var paired = false; 
     return {
+	getInitialized: function(){// for bluetooth users to check
+	    return initialized;
+	},
+	setInitialized: function(initState){//for the ionicplatform.ready call to set
+	    initialized = initState;
+	},
 	enabled: function(){
 	    return $cordovaBluetoothSerial.isEnabled(function(){
 		return true;
@@ -100,25 +105,17 @@ angular.module('dslr.services', ['ngCordova'])
 	    // IOS + WP do *not* support connecting to bluetooth devices with MAC or the discover unpaired function
 	    // that will need to be accounted for when we get there
 	    if(ionic.Platform.isAndroid()){
-		alert('in android');
-		for(func in $cordovaBluetoothSerial){
-		    alert(typeof $cordovaBluetoothSerial[func] + ': ' + func);
-		}
-		alert('using bs');
-		alert($cordovaBluetoothSerial.discoverUnpaired);
-		alert('usable?');
 		return $cordovaBluetoothSerial.discoverUnpaired(function(devices){
-		    alert('success');
-		    return devices;
-		}, function(_){
-		    alert('fail');
-		    return false; 
-		});
+			alert('success');
+			return devices;
+		    }, function(_){
+			alert('fail');
+			return false; 
+		    });	   
 	    } else {
 		alert('Platform not supported yet');
 		return [];
 	    }
-            //$cordovaBluetoothSerial.connect(macAddress, this.onConnect, this.onDisconnect);
 	},
 	// connection string is either a MAC address (Android or WP) or a uuid (ios)
 	// either way the call is the same

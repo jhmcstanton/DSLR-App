@@ -17,7 +17,9 @@
 	Send Keyframes!
       </button>
       <!-- Bluetooth pairing interface -->
-      <button ng-disabled="paired" class="button button-block button-energized" ng-click="pairCarriage()">Pair DSLR Dolly</button>
+      <button ng-disabled="paired && !bluetoothInitialized" class="button button-block button-energized" ng-click="pairCarriage()">
+	Pair DSLR Dolly
+      </button>
     </div>
   </ion-content>
 </ion-view>

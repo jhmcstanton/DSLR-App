@@ -1,11 +1,10 @@
-angular.module('dslr.controllers', ['dslr.services'])
+angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout, BluetoothService, $ionicPopup, Debug) {
     var textarea = document.getElementById("logRegion");
 
     $scope.debug    = false; 
     $scope.debugLog = Debug.getDebugLog();
-    $scope.bluetoothEnabled = false; 
 
 /*    if(ionic.Platform.isIOS() || ionic.Platform.isAndroid()){
 	$scope.bluetoothEnabled = BluetoothService.enabled();
@@ -17,9 +16,6 @@ angular.module('dslr.controllers', ['dslr.services'])
     };
     $scope.toggleBT = function(){
 	alert('HERE!');
-	for(func in BluetoothService){
-	    alert(func + ': ' );
-	}
 	$scope.bluetoothEnabled = BluetoothService.enabled();
 	alert($scope.bluetoothEnabled);
 	alert('LAST');
@@ -45,15 +41,20 @@ angular.module('dslr.controllers', ['dslr.services'])
     ionic.on('swipeleft', updateLog, document);
 })
 
-.controller('KeyframeListCtrl', function($scope, $q, $stateParams, $ionicPopup, $state, KeyframeService, Debug, BluetoothService){
+.controller('KeyframeListCtrl', function($scope, $q, $stateParams, $ionicPopup, 
+					 $state, KeyframeService, Debug, 
+					 BluetoothService, $ionicLoading){
     $scope.keyframes = []; //KeyframeService.getKeyframes();
 
-    $scope.paired   = false;
+    $scope.paired         = false;
+    $scope.loadingDevices = false;
 
     $scope.totalDuration = 0;
+    $scope.bluetoothInitialized = false;
+    $scope.devices = [];
     
     $scope.ready = function(){
-	return $scope.keyframes.length >= 2; // && $scope.paired && BluetoothService.enabled 
+	return $scope.keyframes.length >= 2 && $scope.bluetoothInitialized; // && $scope.paired && BluetoothService.enabled 
     };
 
     $scope.send = function(){ 
@@ -65,22 +66,36 @@ angular.module('dslr.controllers', ['dslr.services'])
 	}
     };
     $scope.pairCarriage = function(){
-	alert('going to discover');
-	try {
-	    var devices = BluetoothService.discover();
-	    alert('discovered');
-	    alert('length' + devices.length);
-	    for(device in devices){
-		alert(device);
-	    }
-	} catch (err){
-	    alert('caught : ' + err);
-	}
+	$scope.loadingDevices = true;
+	BluetoothService.discover().then(function(devices){
+	    $scope.loadingDevices = false;
+	    $scope.devices = devices;
+	});
     };
   
   $scope.addKeyframe = function() {
       $state.go('app.single_keyframe');      
   };
+
+  $scope.$watch(function(){
+      return BluetoothService.getInitialized()
+  }, function(newInit, _){
+      $scope.bluetoothInitialized = newInit;
+  });
+
+  $scope.$watch(function(){
+      return $scope.loadingDevices;
+  }, function(newLoadingDevices, oldLoadingDevices){
+      if(newLoadingDevices){ // loading device list right now
+	  $ionicLoading.show({
+	      templateUrl: "templates/loading.html"
+	  });
+      } else {
+	  $ionicLoading.hide(); // done loading
+
+	  // do stuff with bluetooth devices here!	  
+      }
+  });
 
   $scope.$watch(function(){
       return KeyframeService.getKeyframes();
