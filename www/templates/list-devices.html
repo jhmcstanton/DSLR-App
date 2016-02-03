@@ -1,0 +1,14 @@
+<ion-view view-title="Available Devices">
+  <ion-content>
+    <div class="list list-inset">
+      <ion-list class="list card">
+	<ion-item ng-repeat="device in devices()">
+	  name: {{ device.name }} </br>
+	  id: {{ device.id }} </br>
+	  address: {{ device.address }} </br>
+	  class: {{ device.class }} </br>
+	</ion-item>
+      </ion-list>
+    </div>
+  </ion-content>
+</ion-view>

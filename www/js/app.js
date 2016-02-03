@@ -41,6 +41,15 @@ angular.module('dslr', ['ionic', 'dslr.controllers', 'dslr.services', 'ngCordova
       }
     }  
   })
+ .state('app.choose_device', {
+     url: '/choose_device',
+     views: {
+	 'menuContent': {
+	     templateUrl: 'templates/list-devices.html',
+	     controller: 'BluetoothDisplayCtrl'
+	 }
+     }
+ })
  .state('app.single_keyframe', {
     url: '/add_keyframe',
     views: {

@@ -60,7 +60,7 @@ angular.module('dslr.services', ['ngCordova'])
 })
 
 // Allows arbitrary controllers to perform bluetooth actions
-.service('BluetoothService', function($ionicPopup, $cordovaBluetoothSerial, $ionicPlatform){
+.service('BluetoothService', function($ionicPopup, $q, $cordovaBluetoothSerial, $ionicPlatform){
 //    var bluetoothSerial = ngCordova.plugins.bluetoothSerial;
     // initialized is for us to keep track of library state, not the bluetooth controller itself
     var initialized = false;
@@ -68,6 +68,7 @@ angular.module('dslr.services', ['ngCordova'])
     var rcvCarriageDebug = false; // sentinel to subscribe to carriage debug feed
     var debugLines = [];
     var paired = false; 
+    var devices = [1, 2, 3];
     return {
 	getInitialized: function(){// for bluetooth users to check
 	    return initialized;
@@ -94,7 +95,7 @@ angular.module('dslr.services', ['ngCordova'])
 			return true; 
 		    }, function(){ //failure callback
 			return false;
-		    }
+		      }
 		    );
 		}
 	    }
@@ -105,17 +106,25 @@ angular.module('dslr.services', ['ngCordova'])
 	    // IOS + WP do *not* support connecting to bluetooth devices with MAC or the discover unpaired function
 	    // that will need to be accounted for when we get there
 	    if(ionic.Platform.isAndroid()){
-		return $cordovaBluetoothSerial.discoverUnpaired(function(devices){
-			alert('success');
+		return $cordovaBluetoothSerial.discoverUnpaired(function(discoveredDevices){
+		        //setDevices(discoveredDevices); // check for scoping issues
+			return discoveredDevices;
+		    }, function(err){
+			return []; 
+		    }).then(function(discoveredDevices){
+			devices = discoveredDevices;
 			return devices;
-		    }, function(_){
-			alert('fail');
-			return false; 
-		    });	   
+		    });
 	    } else {
 		alert('Platform not supported yet');
 		return [];
 	    }
+	},
+	getDevices: function() {
+	    return devices;
+	},
+	setDevices: function(newDevices){ //remove this shit
+	    devices = newDevices;
 	},
 	// connection string is either a MAC address (Android or WP) or a uuid (ios)
 	// either way the call is the same
