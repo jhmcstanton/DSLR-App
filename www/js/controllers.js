@@ -46,17 +46,18 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 					 BluetoothService, $ionicLoading){
     $scope.keyframes = []; //KeyframeService.getKeyframes();
 
-    $scope.paired         = false;
+    $scope.paired         = BluetoothService.getPaired;
     $scope.loadingDevices = false;
+    $scope.loadingTitle   = "Finding Devices...";
 
     $scope.totalDuration = 0;
-    $scope.bluetoothInitialized = false;
     
     $scope.ready = function(){
-	return $scope.keyframes.length >= 2 && $scope.bluetoothInitialized; // && $scope.paired && BluetoothService.enabled 
+	return $scope.keyframes.length >= 2 && $scope.paired(); // && BluetoothService.enabled 
     };
 
     $scope.send = function(){ 
+	BluetoothService.sendMsg(KeyframeService.buildKeyframeBuffer($scope.keyframes));
 	if(Debug.getDebug()){
 	    $ionicPopup.alert({
 		title    : 'Frames Sent!',
@@ -68,14 +69,6 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	$scope.loadingDevices = true;
 	BluetoothService.discover().then(function(devices){
 	    $scope.loadingDevices = false;
-	    alert('devices length: ' + devices.length);
-//	    BluetoothService.setDevices(devices);
-	    for(i = 0; i < devices.length; i++){
-		var device = devices[i];
-		for(key in device){
-		    alert(key + ' : ' + device[key]);
-		}
-	    }
 	});
     };
   
@@ -94,6 +87,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
   }, function(newLoadingDevices, oldLoadingDevices){
       if(newLoadingDevices){ // loading device list right now
 	  $ionicLoading.show({
+	      scope: $scope,
 	      templateUrl: "templates/loading.html"
 	  });
       } else if (newLoadingDevices !== oldLoadingDevices) {
@@ -153,6 +147,30 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     }; 
 })
 
-.controller('BluetoothDisplayCtrl', function($scope, BluetoothService){
+.controller('BluetoothDisplayCtrl', function($scope, BluetoothService, $ionicLoading, $state){
     $scope.devices = BluetoothService.getDevices;
+    $scope.connecting = false;
+    $scope.loadingTitle = "Connecting to Device..."
+
+    $scope.connect = function(address){
+	$scope.connecting = true;
+	BluetoothService.connect(address).then(function(){
+	    $scope.connecting = false;
+	});
+    };
+    $scope.$watch(function(){
+	return $scope.connecting;
+    }, function(newConnecting, oldConnecting){
+	if(newConnecting){
+	    $ionicLoading.show({
+		scope: $scope,
+		templateUrl: "templates/loading.html"
+	    });
+	} else if (newConnecting !== oldConnecting){  
+	    // this if statement ensures that this view doesn't automatically redirect when $scope.connecting 
+	    // is first set on the view load above
+	    $ionicLoading.hide(); 
+	    $state.go('app.keyframes');	    
+	}
+    });
 });

@@ -73,6 +73,9 @@ angular.module('dslr.services', ['ngCordova'])
 	getInitialized: function(){// for bluetooth users to check
 	    return initialized;
 	},
+	getPaired : function(){
+	    return paired;
+	},
 	setInitialized: function(initState){//for the ionicplatform.ready call to set
 	    initialized = initState;
 	},
@@ -123,18 +126,16 @@ angular.module('dslr.services', ['ngCordova'])
 	getDevices: function() {
 	    return devices;
 	},
-	setDevices: function(newDevices){ //remove this shit
-	    devices = newDevices;
-	},
 	// connection string is either a MAC address (Android or WP) or a uuid (ios)
 	// either way the call is the same
 	connect: function(connectionString) {
-	    $cordovaBluetoothSerial.connect(connectionString, function(){
-		paired = true; 
-		this.onConnect();
+	    return $cordovaBluetoothSerial.connect(connectionString, function(){
 		return true; // successful connection
 	    }, function() {
 		return false;
+	    }).then(function(_){
+		paired = true;
+		this.onConnect();
 	    });			   
 	},
 	disconnect: function(){
