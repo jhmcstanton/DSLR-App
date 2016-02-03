@@ -147,16 +147,24 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     }; 
 })
 
-.controller('BluetoothDisplayCtrl', function($scope, BluetoothService, $ionicLoading, $state){
+.controller('BluetoothDisplayCtrl', function($scope, BluetoothService, $ionicLoading, $state, $timeout, $ionicPopup){
     $scope.devices = BluetoothService.getDevices;
     $scope.connecting = false;
     $scope.loadingTitle = "Connecting to Device..."
 
     $scope.connect = function(address){
 	$scope.connecting = true;
-	BluetoothService.connect(address).then(function(){
+	alert('attempting to connect to: ' + address);
+	$timeout(function(){
+	    BluetoothService.connect(address);
+	}, BluetoothService.getTimeout()).then(function(){
+	    $ionicPopup.alert({
+		title: "Bluetooth Connection Error!",
+		template: "Unable to connect to DSLR Carriage, connection timed out."
+	    });
 	    $scope.connecting = false;
-	});
+	}); 
+	alert('called connect');
     };
     $scope.$watch(function(){
 	return $scope.connecting;
@@ -166,11 +174,13 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 		scope: $scope,
 		templateUrl: "templates/loading.html"
 	    });
-	} else if (newConnecting !== oldConnecting){  
+	} else {
+	    $ionicLoading.hide(); 
+	    if (newConnecting !== oldConnecting){  
 	    // this if statement ensures that this view doesn't automatically redirect when $scope.connecting 
 	    // is first set on the view load above
-	    $ionicLoading.hide(); 
-	    $state.go('app.keyframes');	    
+		$state.go('app.keyframes');	    
+	    }
 	}
     });
 });

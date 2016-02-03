@@ -69,7 +69,14 @@ angular.module('dslr.services', ['ngCordova'])
     var debugLines = [];
     var paired = false; 
     var devices = [1, 2, 3];
+    var timeoutDuration = 150000; 
     return {
+	getTimeout: function(){
+	    return timeoutDuration;
+	},
+	setTimeout: function(newTimeout){
+	    timeoutDuration = newTimeout
+	},
 	getInitialized: function(){// for bluetooth users to check
 	    return initialized;
 	},
@@ -136,7 +143,7 @@ angular.module('dslr.services', ['ngCordova'])
 	    }).then(function(_){
 		paired = true;
 		this.onConnect();
-	    });			   
+	    });	
 	},
 	disconnect: function(){
 	    rcvCarriageDebug = false;
