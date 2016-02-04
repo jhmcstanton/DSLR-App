@@ -1,4 +1,3 @@
 *~
 #*
-platforms/android/build/*
-platforms/ios/build/*
+platforms/*
