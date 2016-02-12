@@ -44,7 +44,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 .controller('KeyframeListCtrl', function($scope, $q, $stateParams, $ionicPopup, 
 					 $state, KeyframeService, Debug, 
 					 BluetoothService, $ionicLoading){
-    $scope.keyframes = []; //KeyframeService.getKeyframes();
+    $scope.keyframes = []; //KeyframeService.get
 
     $scope.paired         = BluetoothService.getPaired;
     $scope.loadingDevices = false;
@@ -152,11 +152,23 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     $scope.connecting = false;
     $scope.loadingTitle = "Connecting to Device..."
 
-    $scope.connect = function(address){
+    $scope.connect = function(device){
 	$scope.connecting = true;
 	alert('attempting to connect to: ' + address);
-	$timeout(function(){
-	    BluetoothService.connect(address);
+	try {
+	BluetoothService.connect(device).
+	    then(function(){
+		$scope.connecting = false;
+		if(BluetoothService.getPaired()){
+		    alert('connected');		    
+		} else {
+		    alert('not connected');
+		}
+	    });
+	} catch(err){
+	    alert(err);
+	}
+/*
 	}, BluetoothService.getTimeout()).then(function(){
 	    $ionicPopup.alert({
 		title: "Bluetooth Connection Error!",
@@ -164,7 +176,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	    });
 	    $scope.connecting = false;
 	}); 
-	alert('called connect');
+	alert('called connect');*/
     };
     $scope.$watch(function(){
 	return $scope.connecting;

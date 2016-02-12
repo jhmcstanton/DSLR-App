@@ -1,12 +1,4 @@
 {
-    "cordova-plugin-bluetooth-serial": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-bluetooth-serial"
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
     "cordova-plugin-console": {
         "source": {
             "type": "registry",
@@ -27,6 +19,14 @@
         "source": {
             "type": "registry",
             "id": "ionic-plugin-keyboard"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-ble-central": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-ble-central"
         },
         "is_top_level": true,
         "variables": {}

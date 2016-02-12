@@ -7,7 +7,7 @@
         "files": {}
     },
     "installed_plugins": {
-        "cordova-plugin-bluetooth-serial": {
+        "cordova-plugin-ble-central": {
             "PACKAGE_NAME": "com.ionicframework.dslr387101"
         },
         "cordova-plugin-console": {
