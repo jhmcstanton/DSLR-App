@@ -43,7 +43,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 
 .controller('KeyframeListCtrl', function($scope, $q, $stateParams, $ionicPopup, 
 					 $state, KeyframeService, Debug, 
-					 BluetoothService, $ionicLoading){
+					 BluetoothService, $ionicLoading, $timeout){
     $scope.keyframes = []; //KeyframeService.get
 
     $scope.paired         = BluetoothService.getPaired;
@@ -51,18 +51,28 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     $scope.loadingTitle   = "Finding Devices...";
 
     $scope.totalDuration = 0;
+    $scope.sending = false;
     
     $scope.ready = function(){
 	return $scope.keyframes.length >= 2 && $scope.paired(); // && BluetoothService.enabled 
     };
 
     $scope.send = function(){ 
-	BluetoothService.sendMsg(KeyframeService.buildKeyframeBuffer($scope.keyframes));
-	if(Debug.getDebug()){
-	    $ionicPopup.alert({
-		title    : 'Frames Sent!',
-		template : 'Buffer: ' + KeyframeService.buildKeyframeBuffer($scope.keyframes)
-	    });
+	$scope.sending = true;
+	try {
+	var frameBuffers = KeyframeService.buildKeyframeBuffer($scope.keyframes);	    
+
+	BluetoothService.sendMsg(frameBuffers).then(function(){
+	    $scope.sending = false;
+	    if(Debug.getDebug()){
+/*		$ionicPopup.alert({
+		    title    : 'Frames Sent!',
+		    template : 'Buffer length: ' + frameBuffer.length + '</br>Buffer: ' + frameBuffer
+		});*/
+	}	
+	});
+	} catch(err){
+	    alert(err);
 	}
     };
     $scope.pairCarriage = function(){
@@ -77,6 +87,20 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
   };
 
   $scope.$watch(function(){
+      return $scope.sending;
+  }, function(newSending, oldSending){
+      if(newSending){
+	  $scope.loadingTitle = "Sending Keyframe Buffer..";
+	  $ionicLoading.show({
+	      scope: $scope,
+	      templateUrl: "templates/loading.html"
+	  });
+      } else {
+	  $ionicLoading.hide();
+      }
+  });
+
+  $scope.$watch(function(){
       return BluetoothService.getInitialized()
   }, function(newInit, _){
       $scope.bluetoothInitialized = newInit;
@@ -86,6 +110,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
       return $scope.loadingDevices;
   }, function(newLoadingDevices, oldLoadingDevices){
       if(newLoadingDevices){ // loading device list right now
+	  $scope.loadingTitle = "Finding Devices..";
 	  $ionicLoading.show({
 	      scope: $scope,
 	      templateUrl: "templates/loading.html"
@@ -154,29 +179,17 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 
     $scope.connect = function(device){
 	$scope.connecting = true;
-	alert('attempting to connect to: ' + address);
-	try {
 	BluetoothService.connect(device).
 	    then(function(){
 		$scope.connecting = false;
-		if(BluetoothService.getPaired()){
-		    alert('connected');		    
-		} else {
-		    alert('not connected');
+		if(!BluetoothService.getPaired()){
+		    $ionicPopup.alert({
+			title: "Bluetooth Connection Error!",
+			template: "Unable to connect to DSLR Carriage"
+		    });
 		}
 	    });
-	} catch(err){
-	    alert(err);
-	}
-/*
-	}, BluetoothService.getTimeout()).then(function(){
-	    $ionicPopup.alert({
-		title: "Bluetooth Connection Error!",
-		template: "Unable to connect to DSLR Carriage, connection timed out."
-	    });
-	    $scope.connecting = false;
-	}); 
-	alert('called connect');*/
+
     };
     $scope.$watch(function(){
 	return $scope.connecting;

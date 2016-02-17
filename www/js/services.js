@@ -21,14 +21,50 @@ angular.module('dslr.services', ['ngCordova'])
 	    return keyframes;
 	},
 	buildKeyframeBuffer: function(frames){
-	    buffer = frames.length.toString() + "|";
+	    // build the JS string
+	    var buffersize = 20; // nrf8001 buffer size is only 20 bytes :(
+
+	    // helper for chunking large strings into strings of length *length*
+	    // http://stackoverflow.com/questions/7033639/split-large-string-in-n-size-chunks-in-javascript
+	    var chunkString = function(str) {
+		return str.match(new RegExp('.{1,' + buffersize + '}', 'g'));
+	    };
+	    var padZeros = function(item, totalLength){
+		var newStr = '0'; 
+		if(item === undefined){
+		    alert('item is undefined, fix that template!');
+		    newStr = '0';
+		} else {
+		    newStr = item.toString();
+		}
+		for(i = 0; i < (totalLength - newStr.length); i++){
+		    newStr = '0' + newStr;
+		}
+		return newStr;
+	    }
+
+	    frameStr = frames.length.toString() + "|";
 	    frames.forEach(function(frame){
-		buffer += frame.time + "|" + 
-		    frame.position   + "|" + 
-		    frame.panAngle   + "|" + 
-		    frame.tiltAngle  + "|"; 
+		frameStr += padZeros(frame.time, 6),  + "|" + 
+		    padZeros(frame.position, 3)   + "|" + 
+		    padZeros(frame.panAngle, 2)   + "|" + 
+		    padZeros(frame.tiltAngle, 6)  + "|"; 
 	    });
-	    return buffer; 
+
+	    // now convert it to a buffer that the BLE interface can handle
+	    var DELETEMEHARDCODETHING = "4|000000|00|00|000000|001000|30|20|010000|001500|45|25|018000|002500|30|60|033000|";
+	    // splitting up the string into individual keyframe buffers
+	    var keyframeBuffers = [];
+	    var frameChunks = chunkString(DELETEMEHARDCODETHING);
+	    for(i = 0; i < frameChunks.length; i++){
+		keyframeBuffers.push(new Uint8Array(frameChunks[i].length));
+		for(j = 0; j < frameChunks[i].length; j++){
+		    keyframeBuffers[i][j] = frameChunks[i].charCodeAt(j);
+		}
+		alert(keyframeBuffers[i]);
+	    }
+	    
+	    return keyframeBuffers; 
 	},
     };
 })
@@ -69,6 +105,12 @@ angular.module('dslr.services', ['ngCordova'])
     var device = {};
     var devices = [];
     var timeoutDuration = 2000; 
+    // manufacturer provided UUIDs for BLE services
+    var serviceIDs = {
+	UART : "6E400001-B5A3-F393-E0A9-E50E24DCCA9E",
+	TX   : "6E400002-B5A3-F393-E0A9-E50E24DCCA9E",
+	RX   : "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
+    };
     return {
 	getTimeout: function(){
 	    return timeoutDuration;
@@ -81,7 +123,6 @@ angular.module('dslr.services', ['ngCordova'])
 	},
 	getPaired : function(){
 	    if (device === {}){
-		alert('wat');
 		return false;
 	    } else {
 		return $cordovaBLE.isConnected(device.id, function(connected){
@@ -191,12 +232,23 @@ angular.module('dslr.services', ['ngCordova'])
 		return false;
 	    });
         },
-	sendMsg: function(msg){
-	    $cordovaBluetoothSerial.write(msg, function() {
-		return true;
-	    }, function() {
-		return false;
+	sendMsg: function(msgBuffers){
+	    alert('inside sendMsg');
+	    alert(msgBuffers);
+	    for(i = 0; i < msgBuffers.length; i++){
+		alert(msgBuffers[i]);
+	    }
+	    var promise = Promise.resolve();
+	    
+	    
+	    msgBuffers.forEach(function(msgBuffer){
+		promise.then(function(){
+		    alert(msgBuffer);
+		    $cordovaBLE.writeWithoutResponse(device.id, serviceIDs.UART, serviceIDs.TX, msgBuffer.buffer);
+		});
 	    });
+	    return promise;
+		
 	}
     };
 });
