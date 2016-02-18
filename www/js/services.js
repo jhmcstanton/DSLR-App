@@ -33,11 +33,12 @@ angular.module('dslr.services', ['ngCordova'])
 		var newStr = '0'; 
 		if(item === undefined){
 		    alert('item is undefined, fix that template!');
+		    item = '0';
 		    newStr = '0';
 		} else {
 		    newStr = item.toString();
 		}
-		for(i = 0; i < (totalLength - newStr.length); i++){
+		for(i = 0; i < (totalLength - item.toString().length); i++){
 		    newStr = '0' + newStr;
 		}
 		return newStr;
@@ -45,23 +46,21 @@ angular.module('dslr.services', ['ngCordova'])
 
 	    frameStr = frames.length.toString() + "|";
 	    frames.forEach(function(frame){
-		frameStr += padZeros(frame.time, 6),  + "|" + 
+		frameStr += padZeros(frame.time, 6)  + "|" + 
 		    padZeros(frame.position, 3)   + "|" + 
 		    padZeros(frame.panAngle, 2)   + "|" + 
 		    padZeros(frame.tiltAngle, 6)  + "|"; 
 	    });
 
 	    // now convert it to a buffer that the BLE interface can handle
-	    var DELETEMEHARDCODETHING = "4|000000|00|00|000000|001000|30|20|010000|001500|45|25|018000|002500|30|60|033000|";
 	    // splitting up the string into individual keyframe buffers
 	    var keyframeBuffers = [];
-	    var frameChunks = chunkString(DELETEMEHARDCODETHING);
+	    var frameChunks = chunkString(frameStr);
 	    for(i = 0; i < frameChunks.length; i++){
 		keyframeBuffers.push(new Uint8Array(frameChunks[i].length));
 		for(j = 0; j < frameChunks[i].length; j++){
 		    keyframeBuffers[i][j] = frameChunks[i].charCodeAt(j);
 		}
-		alert(keyframeBuffers[i]);
 	    }
 	    
 	    return keyframeBuffers; 
@@ -233,17 +232,12 @@ angular.module('dslr.services', ['ngCordova'])
 	    });
         },
 	sendMsg: function(msgBuffers){
-	    alert('inside sendMsg');
-	    alert(msgBuffers);
-	    for(i = 0; i < msgBuffers.length; i++){
-		alert(msgBuffers[i]);
-	    }
+
 	    var promise = Promise.resolve();
 	    
 	    
 	    msgBuffers.forEach(function(msgBuffer){
 		promise.then(function(){
-		    alert(msgBuffer);
 		    $cordovaBLE.writeWithoutResponse(device.id, serviceIDs.UART, serviceIDs.TX, msgBuffer.buffer);
 		});
 	    });
