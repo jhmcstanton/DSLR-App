@@ -1,0 +1,19 @@
+language: android
+before_install:
+- sudo npm update
+- sudo npm install cordova
+- sudo npm install ionic
+- cordova platform add android
+- cordova plugin install cordova-plugin-ble-central
+script:
+- ionic build android
+branches:
+  only:
+  - master
+deploy:
+  provider: releases
+  api_key:
+    secure: nj3SveSAWZbpwmfqFLNyoKVQG0I5w0xiSKniUURht2pklj2a1uTW0JmR1tPR7H6fLb/Z0AE8w7Fudc70t6ULJ2R/9h/yWp6za3erSH6L5YrLjFvB7XxPI2XWU/01mCEv8H8GwoZu2qLSJn0hk7tGMaO2zQ+t907DFW9FUPOMp7qFfpvEJNbaFxi7nZlcxD2zpdvyWIL4z6qJqasIkVLHHabUqmKkbLzaFvGjMNrJmHPRRk/H2vj4jkXQVHQECO0ZeNvulZizJNZkntN5OSziRMH7lhdTmr7tytq2NL0CnGU5FXvI6/gsmZ2u61H+hd4SRYNRcJU4RWKX4wRkAHX3GZCA/3wFtbk4Mha/RulUEe+PguxtuuOVxlXkFJyM5pGJmr1z5PFxbDRH1y3PN34wkc4NbnO8WWryL5HxP3Ffn7YO2FCqhAxg4hckR9RJRwZnnTMM3z1u7l5YDeXuWxQOGTYBSef/dHpw2DmEB4kcMYbN7GZL+pphJg4DDpyNz+q0jwnbb2w6QbzQ6fsQJ8fi5BoT94hP0IjfKIO8mRJsVvr8PMuDWCDLhV43N281hozOU50gtVtJGyRYvrfhxw5S0naYjCwlhOEdf1+EPvC/FrbRgwvOb12+MD66hhlybVXeIkaiV/vS0CiwFivlogTFikc4ivd6vkt3gc7+R47wjic=
+  file: platforms/android/build/outputs/apk/android-debug.apk
+  on:
+    repo: jhstanton/DSLR-App
