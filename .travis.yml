@@ -3,7 +3,6 @@ before_install:
 - npm update
 - npm install cordova
 - npm install ionic
-- cordova platform add android
 - cordova plugin install cordova-plugin-ble-central
 script:
 - ionic build android
