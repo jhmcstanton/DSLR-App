@@ -1,0 +1,12 @@
+language: android
+before_install:
+  - sudo npm update
+  - sudo npm install cordova
+  - sudo npm install ionic
+  - cordova platform add android
+  - cordova plugin install cordova-plugin-ble-central
+script:
+  - ionic build android
+branches: 
+  only:
+    - master
