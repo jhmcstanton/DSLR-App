@@ -46,10 +46,10 @@ angular.module('dslr.services', ['ngCordova'])
 
 	    frameStr = frames.length.toString() + "|";
 	    frames.forEach(function(frame){
-		frameStr += padZeros(frame.time, 6)  + "|" + 
-		    padZeros(frame.position, 3)   + "|" + 
+		frameStr += padZeros(frame.position, 3) + "|" + 
 		    padZeros(frame.panAngle, 2)   + "|" + 
-		    padZeros(frame.tiltAngle, 6)  + "|"; 
+		    padZeros(frame.tiltAngle, 6)  + "|" + 
+		    padZeros(frame.time, 6) + "|"; 
 	    });
 
 	    // now convert it to a buffer that the BLE interface can handle
