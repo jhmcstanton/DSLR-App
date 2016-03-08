@@ -43,8 +43,9 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 
 .controller('KeyframeListCtrl', function($scope, $q, $stateParams, $ionicPopup, 
 					 $state, KeyframeService, Debug, 
-					 BluetoothService, $ionicLoading, $timeout){
-    $scope.keyframes = []; //KeyframeService.get
+					 BluetoothService, $ionicLoading, $timeout, $interval){
+    $scope.keyframes = KeyframeService.getKeyframes;
+    $scope.clearFrames = KeyframeService.clearFrames;
 
     $scope.paired         = BluetoothService.getPaired;
     $scope.loadingDevices = false;
@@ -54,14 +55,26 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     $scope.sending = false;
     
     $scope.ready = function(){
-	return $scope.keyframes.length >= 2 && $scope.paired(); // && BluetoothService.enabled 
+	return $scope.keyframes().length >= 2 && $scope.paired(); // && BluetoothService.enabled 
     };
+
+    $scope.disconnect = BluetoothService.disconnect;
+    $scope.remove     = function(keyframe){
+	$ionicPopup.confirm({
+	    title : 'Confirm Delete',
+	    template : 'Do you want to delete this keyframe?'
+	}).then(function(confirmation){
+	    if(confirmation){
+		KeyframeService.removeFrame(keyframe);
+	    }
+	});
+    }
 
     $scope.send = function(){ 
 	$scope.sending = true;
 	try {
-	var frameBuffers = KeyframeService.buildKeyframeBuffer($scope.keyframes);	    
-
+	var frameBuffers = KeyframeService.buildKeyframeBuffer($scope.keyframes());	    
+	    
 	BluetoothService.sendMsg(frameBuffers).then(function(){
 	    $scope.sending = false;
 	    if(Debug.getDebug()){
@@ -121,18 +134,12 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
       }
   });
 
-  $scope.$watch(function(){
-      return KeyframeService.getKeyframes();
-  }, function(newframes, _){
-      $scope.keyframes = newframes;
-  }); // these 2 watches might be easily combined
-
   // watch the length of the keyframes - first function is the watching function, second is the comparator
   $scope.$watch(function(){
-      return $scope.keyframes.length;
+      return $scope.keyframes().length;
   }, function(newLength, _) {
       if(newLength >= 2){ // minimum of 2 frames are required to transmit
-	  $scope.totalDuration = $scope.keyframes[newLength - 1].time - $scope.keyframes[0].time;
+	  $scope.totalDuration = $scope.keyframes()[newLength - 1].time - $scope.keyframes()[0].time;
       } else { 
 	  $scope.totalDuration = 0;
       }

@@ -1,15 +1,13 @@
 <ion-view view-title="Keyframes">
   <ion-content>
     <div class="list list-inset">
-      <ion-list class="list card">
-	<ion-item ng-repeat="keyframe in keyframes">
+      <div class="item card" ng-repeat="keyframe in keyframes()" on-hold="remove(keyframe)">
           Time: {{keyframe.time}} </br>
 	  Position: {{keyframe.position}} </br>
 	  Pan Angle: {{keyframe.panAngle}} </br>
 	  Tilt Angle: {{keyframe.tiltAngle}} </br>
-	</ion-item>
-	<ion-item>Total Duration: {{totalDuration}}</ion-item>
-      </ion-list>
+      </div>
+      Total Duration: {{totalDuration}}
       <button class="button button-block button-calm" ng-click="addKeyframe()">
 	Add Keyframe
       </button>      
@@ -19,6 +17,13 @@
       <!-- Bluetooth pairing interface -->
       <button class="button button-block button-energized" ng-click="pairCarriage()">
 	Pair DSLR Dolly
+      </button>
+      <!--<button class="button button-block button-energized" ng-click="disconnect()">
+	Disconnect Bluetooth
+      </button>-->
+      <!-- Keyframe stuff -->
+      <button class="button button-block button-calm" ng-click="clearFrames()">
+	Clear KeyFrames
       </button>
     </div>
   </ion-content>

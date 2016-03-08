@@ -3,6 +3,12 @@ angular.module('dslr.services', ['ngCordova'])
 .service('KeyframeService', function($q, $filter){
     var keyframes   = [];
     return {
+	clearFrames : function(){
+	    keyframes = [];
+	},
+	removeFrame : function(frame){ 
+	    keyframes.splice(keyframes.indexOf(frame), 1);
+	},
 	// checks to make sure that a newframe does not clash with another frame time
 	uniqueTime : function(newFrame){
 	    for(frame in keyframes){
@@ -127,7 +133,7 @@ angular.module('dslr.services', ['ngCordova'])
 		return $cordovaBLE.isConnected(device.id, function(connected){
 		    return connected;
 		}, function(err){
-		    return err; 
+		    alert(err); 
 		});
 	    }
 	},
@@ -135,28 +141,11 @@ angular.module('dslr.services', ['ngCordova'])
 	    initialized = initState;
 	},
 	enabled: function(){
-	    return $cordovaBluetoothSerial.isEnabled(function(){
+	    return $cordovaBlu.isEnabled(function(){
 		return true;
 	    }, function(){
 		return false;
 	    });
-	},
-	initialize: function(rcvDebug) {
-	    if (!initialized){
-		if (!$cordovaBluetoothSerial.isEnabled){ 
-		    $cordovaBluetoothSerial.enable(function(){
-			//success callback
-			document.addEventListener('deviceready', function(){
-			    initialized = true;
-			}, false);
-			rcvCarriageDebug = rcvDebug;
-			return true; 
-		    }, function(){ //failure callback
-			return false;
-		      }
-		    );
-		}
-	    }
 	},
 	// either returns a list of the devices in object form or false (as in failure);
 	discover: function() {
