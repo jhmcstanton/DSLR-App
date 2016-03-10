@@ -148,7 +148,11 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 })
 
 .controller('AddKeyframeCtrl', function($scope, $stateParams, $state, $ionicPopup, KeyframeService){
-    $scope.newFrame = {};
+    $scope.newFrame           = {};
+    $scope.newFrame.time      = "";
+    $scope.newFrame.position  = "";
+    $scope.newFrame.panAngle  = "";
+    $scope.newFrame.tiltAngle = "";
     $scope.addKeyframe = function(){
 	var parsedKeyframe = {};
 	for(key in $scope.newFrame){
@@ -173,7 +177,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	}else {
 	    $ionicPopup.alert({
 		title: "Malformed Keyframe",
-		template:  "All fields must be numeric"
+		template:  "All fields must be filled."
 	    });
 	}     
     }; 
