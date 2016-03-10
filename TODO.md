@@ -6,6 +6,7 @@ priority)~~
 
    1. All fields filled (not undefined, which is probably the current issue)
    1. ~~Sorted by time~~
+   1. ~~Without *direct* time collisions~~
    1. Within acceptable parameters
 
 1. GUI Updates and Cleanup

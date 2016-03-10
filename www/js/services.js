@@ -11,7 +11,8 @@ angular.module('dslr.services', ['ngCordova'])
 	},
 	// checks to make sure that a newframe does not clash with another frame time
 	uniqueTime : function(newFrame){
-	    for(frame in keyframes){
+	    for(var i = 0; i < keyframes.length; i++){
+		var frame = keyframes[i];
 		if(frame.time === newFrame.time){
 		    return false;
 		}
