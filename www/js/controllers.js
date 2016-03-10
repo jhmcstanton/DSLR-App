@@ -6,9 +6,6 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     $scope.debug    = false; 
     $scope.debugLog = Debug.getDebugLog();
 
-/*    if(ionic.Platform.isIOS() || ionic.Platform.isAndroid()){
-	$scope.bluetoothEnabled = BluetoothService.enabled();
-    }*/
     $scope.clearDebugLog = function(){
 	Debug.clearLog();
 	$scope.debugLog = Debug.getDebugLog();
@@ -44,7 +41,8 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 .controller('KeyframeListCtrl', function($scope, $q, $stateParams, $ionicPopup, 
 					 $state, KeyframeService, Debug, 
 					 BluetoothService, $ionicLoading, $timeout, $interval){
-    $scope.keyframes = KeyframeService.getKeyframes;
+    $scope.keyframes   = KeyframeService.getKeyframes;
+    $scope.showFrames  = [];
     $scope.clearFrames = KeyframeService.clearFrames;
 
     $scope.paired         = BluetoothService.getPaired;
@@ -54,7 +52,13 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     $scope.totalDuration = 0;
     $scope.sending = false;
     
-    $scope.ready = function(){
+    $scope.toggleShow = function(index){
+	$scope.showFrames[index] = !$scope.showFrames[index];
+    };
+    $scope.getShow    = function(index){
+	return $scope.showFrames[index];
+    };
+    $scope.ready      = function(){
 	return $scope.keyframes().length >= 2 && $scope.paired(); // && BluetoothService.enabled 
     };
 
@@ -99,6 +103,15 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
       $state.go('app.single_keyframe');      
   };
 
+  $scope.$watch($scope.keyframes, function(newframes, _){
+      $scope.showFrames = [];
+      // reset all frames to be hidden 
+      for(var i = 0; i < newframes.length; i++){
+	  $scope.showFrames[i] = false;
+      }
+  });
+    
+  // handle popup for sneding keyframe buffer (may not appear if transfer is fast)
   $scope.$watch(function(){
       return $scope.sending;
   }, function(newSending, oldSending){
@@ -165,7 +178,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	   !Number.isNaN(parsedKeyframe.tiltAngle)){
 
 	    if(KeyframeService.uniqueTime(parsedKeyframe)){		
-		KeyframeService.appendKeyframe(parsedKeyframe);
+		KeyframeService.appendKeyframe(parsedKeyframe, 10);
 		$scope.newFrame = {};
 		$state.go('app.keyframes');
 	    } else {
