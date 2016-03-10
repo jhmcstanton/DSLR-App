@@ -4,7 +4,7 @@
 priority)~~
 1. Proper keyframe validation
 
-   1. All fields filled (not undefined, which is probably the current issue)
+   1. ~~All fields filled (not undefined, which is probably the current issue)~~
    1. ~~Sorted by time~~
    1. ~~Without *direct* time collisions~~
    1. Within acceptable parameters
@@ -14,8 +14,8 @@ priority)~~
    - Cleanup
 
      1. Remove Toggle BT from left pane that does nothing (or edit to do something)
-     1. Add dropdown views for individual keyframe info 
-     1. Add dropdown views for individual device info
+     1. ~~Add dropdown views for individual keyframe info~~ 
+     1. ~~Add dropdown views for individual device info~~
 
    - Updates
      1. Add editing / ~~deleting~~ of existing keyframes
