@@ -197,8 +197,20 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 })
 
 .controller('BluetoothDisplayCtrl', function($scope, BluetoothService, $ionicLoading, $state, $timeout, $ionicPopup){
-    $scope.devices = BluetoothService.getDevices;
-    $scope.connecting = false;
+    $scope.devices      = BluetoothService.getDevices;
+    $scope.showDevices  = [];
+    for(var i = 0; i < $scope.devices().length; i++){
+	$scope.showDevices[i] = false;
+    }
+
+    $scope.toggleShow = function(index){
+	$scope.showDevices[index] = !$scope.showDevices[index];
+    };
+    $scope.getShow    = function(index){
+	return $scope.showDevices[index];
+    };
+
+    $scope.connecting   = false;
     $scope.loadingTitle = "Connecting to Device..."
 
     $scope.connect = function(device){

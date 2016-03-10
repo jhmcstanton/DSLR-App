@@ -2,11 +2,13 @@
   <ion-content>
     <div class="list list-inset">
       <ion-list class="list card">
-	<ion-item ng-repeat="device in devices()">
+	<ion-item ng-repeat="device in devices()" on-touch="toggleShow($index)">
 	  name: {{ device.name }} </br>
-	  id: {{ device.id }} </br>
-	  rssi: {{ device.rssi }} </br>
-	  advertising: {{ device.advertising }} </br>
+	  <span ng-show="getShow($index)">
+	    id: {{ device.id }} </br>
+	    rssi: {{ device.rssi }} </br>
+	    advertising: {{ device.advertising }} </br>
+	  </span>
 	  <button class="button button-block button-energized" ng-click="connect(device)">Connect</button>
 	</ion-item>
       </ion-list>
