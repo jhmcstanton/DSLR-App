@@ -199,6 +199,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 .controller('BluetoothDisplayCtrl', function($scope, BluetoothService, $ionicLoading, $state, $timeout, $ionicPopup){
     $scope.devices      = BluetoothService.getDevices;
     $scope.showDevices  = [];
+        
     for(var i = 0; i < $scope.devices().length; i++){
 	$scope.showDevices[i] = false;
     }
@@ -227,6 +228,18 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	    });
 
     };
+
+    // return back to the keyframe screen if no devices are found!
+    $scope.$watch(function(){
+	return $scope.devices().length;
+    }, function(newLen, _){
+	if(newLen == 0){
+	    $ionicPopup.alert({
+		title: "No Devices Found!",
+		template: "Try checking your Bluetooth settings and that the PB&J Camera Dolly System is powered on."
+	    });
+	}
+    });
     $scope.$watch(function(){
 	return $scope.connecting;
     }, function(newConnecting, oldConnecting){

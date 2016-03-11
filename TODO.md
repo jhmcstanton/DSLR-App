@@ -13,8 +13,12 @@ priority)~~
 
    - Cleanup
 
-     1. Remove Toggle BT from left pane that does nothing (or edit to do something)
+     1. ~~Remove Toggle BT from left pane that does nothing (or edit to do something)~~
+       
+        Now notifies user to check BT settings if no devices are found
+
      1. ~~Add dropdown views for individual keyframe info~~ 
+
      1. ~~Add dropdown views for individual device info~~
 
    - Updates
