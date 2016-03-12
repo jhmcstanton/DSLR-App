@@ -1,13 +1,40 @@
 angular.module('dslr.services', ['ngCordova', 'ionic'])
 
 .service('KeyframeService', function($q, $filter, $window){
+    var keyframe = function(time, position, pan, tilt){
+	this.time      = time;
+	this.position  = position;
+	this.panAngle  = pan;
+	this.tiltAngle = tilt;
+    };
     var storageKey  = 'KeyframeService-favorites';
     var keyframes   = [];
     var favorites   = [];
-    var defaultFavorites = [{name: 'A', keyframes: [{time: 0, position: 0, panAngle: 0, tiltAngle: 0}, {time: 5, position: 100, panAngle: 200, tiltAngle: 300}]}];
+    var defaultFavorites = [
+	{ 
+	    name: 'Short Transitions', 
+	    keyframes: [
+		new keyframe(0, 0, 0, 0),
+		new keyframe(5, 30, 60, 80),
+		new keyframe(12, 60, 200, 0)		
+	    ]
+	},
+	{
+	    name: 'Single Transition',
+	    keyframes: [
+		new keyframe(0, 0, 0, 0),
+		new keyframe(10, 60, 45, 45)
+	    ]
+	},
+	{
+	    name: 'Starter Incomplete',
+	    keyframes: [
+		new keyframe(0, 0, 0, 0)
+	    ]
+	}
+    ];
     return {
 	init: function(){
-	    $window.localStorage[storageKey] = undefined;
 	    favorites = $window.localStorage[storageKey];
 	    if(favorites === 'undefined'){  // nothing has been saved ever
 		favorites = defaultFavorites; 
@@ -15,6 +42,9 @@ angular.module('dslr.services', ['ngCordova', 'ionic'])
 	    } else {
 		favorites = JSON.parse(favorites);
 	    }
+	},
+	keyframe: function(time, pos, pan, tilt){
+	    return new keyframe(time, pos, pan, tilt);
 	},
 	getFavorites: function(){
 	    return favorites;

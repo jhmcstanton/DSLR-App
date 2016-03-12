@@ -21,6 +21,11 @@ priority)~~
 
      1. ~~Add dropdown views for individual device info~~
 
+     1. Convert KeyframeList and KeyframeAdd controllers to use 
+        keyframe constructor from keyframeservice. 
+
+     1. Possibly convert localStorage use to sqlite if problems occur.
+
    - Updates
      1. Add editing / ~~deleting~~ of existing keyframes
      1. Add preloaded keyframes

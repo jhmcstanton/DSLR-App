@@ -264,7 +264,8 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     });
 })
 
-.controller('FavoritesCtrl', function($scope, $state, KeyframeService){
+.controller('FavoritesCtrl', function($scope, $state, KeyframeService,
+				      $ionicPopup){
 
     $scope.favorites = KeyframeService.getFavorites;
     $scope.getShow   = function() { return true; };
@@ -284,6 +285,10 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 		KeyframeService.deleteFavorite(index);
 	    }
 	});
+    };
+
+    $scope.edit = function($index){
+	alert('Add this!');
     };
 })
 
