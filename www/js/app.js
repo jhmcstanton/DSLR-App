@@ -6,7 +6,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('dslr', ['ionic', 'dslr.controllers', 'dslr.services', 'ngCordova'])
 
-.run(function($ionicPlatform, $ionicPopup, BluetoothService, $window) {
+.run(function($ionicPlatform, $ionicPopup, KeyframeService, $window) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -18,7 +18,7 @@ angular.module('dslr', ['ionic', 'dslr.controllers', 'dslr.services', 'ngCordova
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-//    BluetoothService.setInitialized(true);
+      KeyframeService.init();
   });
 })
 
@@ -51,13 +51,22 @@ angular.module('dslr', ['ionic', 'dslr.controllers', 'dslr.services', 'ngCordova
      }
  })
  .state('app.single_keyframe', {
-    url: '/add_keyframe',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/add_keyframe.html',
-        controller: 'AddKeyframeCtrl'
-      }
+     url: '/add_keyframe',
+     views: {
+	 'menuContent': {
+             templateUrl: 'templates/add_keyframe.html',
+             controller: 'AddKeyframeCtrl'
+	 }
     }  
+  })
+  .state('app.favorites', {
+      url: '/favorites',
+      views: {
+	  'menuContent' : {
+	      templateUrl: 'templates/favorites.html',
+	      controller: 'FavoritesCtrl'
+	  }
+      }
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/keyframe_list');

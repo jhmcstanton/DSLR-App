@@ -1,14 +1,12 @@
 <ion-view view-title="Keyframes">
   <ion-content>
     <div class="list list-inset">
-      <div class="item card" ng-repeat="keyframe in keyframes()" on-hold="remove(keyframe)" on-touch="toggleShow($index)">
-          Time: {{keyframe.time}} </br>
-	  <span ng-show="getShow($index)">
-	    Position: {{keyframe.position}} </br>
-	    Pan Angle: {{keyframe.panAngle}} </br>
-	    Tilt Angle: {{keyframe.tiltAngle}} </br>
-	  </span>
-      </div>
+      <dslr-keyframes keyframes="keyframes()"
+                      hold="remove"
+		      touch="toggleShow"
+		      show="getShow">
+      </dslr-keyframes>
+      </br>
       Total Duration: {{totalDuration}}
       <button class="button button-block button-calm" ng-click="addKeyframe()">
 	Add Keyframe
@@ -26,6 +24,9 @@
       <!-- Keyframe stuff -->
       <button class="button button-block button-calm" ng-click="clearFrames()">
 	Clear KeyFrames
+      </button>
+      <button class="button button-block button-calm" ng-click="toFavorites()">
+	View Favorites
       </button>
     </div>
   </ion-content>

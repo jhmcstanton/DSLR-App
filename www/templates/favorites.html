@@ -1,0 +1,29 @@
+<ion-view view-title="Favorites">
+
+  <ion-content>
+
+    <div class="list list-inset">
+      <div class="item card" ng-repeat="fav in favorites()">
+	{{ fav.name }} </br>
+	<span ng-show="getShow($index)">
+	  <dslr-keyframes keyframes="fav.keyframes"
+			  hold="alert"
+			  touch="toggleShow"
+			  show="getShow">
+	  </dslr-keyframes>
+	  </br>	  
+	</span>
+	<button class="button button-block button-calm" 
+		on-touch="loadFavorite($index)">
+	  Load 
+	</button>
+	<button class="button button-block button-assertive" 
+		on-touch="deleteFavorite($index)">
+	  Delete
+	</button>
+      </div>
+    </div>
+
+  </ion-content>
+
+</ion-view>

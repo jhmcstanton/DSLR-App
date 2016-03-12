@@ -99,17 +99,21 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	});
     };
   
-  $scope.addKeyframe = function() {
+    $scope.addKeyframe = function() {
       $state.go('app.single_keyframe');      
-  };
+    };
 
-  $scope.$watch($scope.keyframes, function(newframes, _){
-      $scope.showFrames = [];
-      // reset all frames to be hidden 
-      for(var i = 0; i < newframes.length; i++){
-	  $scope.showFrames[i] = false;
-      }
-  });
+    $scope.toFavorites = function(){
+	$state.go('app.favorites');
+    };
+
+    $scope.$watch($scope.keyframes, function(newframes, _){
+	$scope.showFrames = [];
+	// reset all frames to be hidden 
+	for(var i = 0; i < newframes.length; i++){
+	    $scope.showFrames[i] = false;
+	}
+    });
     
   // handle popup for sneding keyframe buffer (may not appear if transfer is fast)
   $scope.$watch(function(){
@@ -214,6 +218,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     $scope.connecting   = false;
     $scope.loadingTitle = "Connecting to Device..."
 
+
     $scope.connect = function(device){
 	$scope.connecting = true;
 	BluetoothService.connect(device).
@@ -257,4 +262,39 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	    }
 	}
     });
+})
+
+.controller('FavoritesCtrl', function($scope, $state, KeyframeService){
+
+    $scope.favorites = KeyframeService.getFavorites;
+    $scope.getShow   = function() { return true; };
+    $scope.toggleShow = function() { };
+    
+    $scope.loadFavorite = function(index){
+	KeyframeService.loadFavorite(index);
+	$state.go('app.keyframes');
+    };
+
+    $scope.deleteFavorite = function(index){
+	$ionicPopup.confirm({
+	    title : 'Confirm Delete',
+	    template : 'Do you really want to delete ' + $scope.favorites()[index].name + '?'
+	}).then(function(confirmation){
+	    if(confirmation){
+		KeyframeService.deleteFavorite(index);
+	    }
+	});
+    };
+})
+
+.directive('dslrKeyframes', function() {
+    return {
+	scope: {
+	    keyframes: "=keyframes",
+	    hold     : "=hold",
+	    touch    : "=touch",
+	    show     : "=show"
+	},
+	templateUrl: 'templates/includes/keyframes.html',
+    };
 });

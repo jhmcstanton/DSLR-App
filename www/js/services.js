@@ -1,8 +1,35 @@
-angular.module('dslr.services', ['ngCordova'])
+angular.module('dslr.services', ['ngCordova', 'ionic'])
 
-.service('KeyframeService', function($q, $filter){
+.service('KeyframeService', function($q, $filter, $window){
+    var storageKey  = 'KeyframeService-favorites';
     var keyframes   = [];
+    var favorites   = [];
+    var defaultFavorites = [{name: 'A', keyframes: [{time: 0, position: 0, panAngle: 0, tiltAngle: 0}, {time: 5, position: 100, panAngle: 200, tiltAngle: 300}]}];
     return {
+	init: function(){
+	    $window.localStorage[storageKey] = undefined;
+	    favorites = $window.localStorage[storageKey];
+	    if(favorites === 'undefined'){  // nothing has been saved ever
+		favorites = defaultFavorites; 
+		this.saveFavorites();
+	    } else {
+		favorites = JSON.parse(favorites);
+	    }
+	},
+	getFavorites: function(){
+	    return favorites;
+	},
+	loadFavorite: function(favIndex){
+	    this.clearFrames(); 
+	    keyframes = favorites[favIndex].keyframes;
+	},
+	deleteFavorite: function(favIndex){
+	    favorites.splice(favIndex, 1);
+	    this.saveFavorites(favorites);
+	},
+	saveFavorites: function(){
+	    $window.localStorage[storageKey] = JSON.stringify(favorites);
+	},
 	clearFrames : function(){
 	    keyframes = [];
 	},
