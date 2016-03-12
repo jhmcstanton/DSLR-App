@@ -4,12 +4,15 @@
 
     <div class="list list-inset">
       <div class="item card" ng-repeat="fav in favorites()">
-	{{ fav.name }} </br>
-	<span ng-show="getShow($index)">
+	<ion-item on-touch="toggleShowFav($index)">
+	  {{ fav.name }}
+	</ion-item> 
+        </br>
+	<span ng-show="showFav($index)">
 	  <dslr-keyframes keyframes="fav.keyframes"
 			  hold="alert"
-			  touch="toggleShow"
-			  show="getShow">
+			  touch="toggleShowKeyframes"
+			  show="showKeyframes">
 	  </dslr-keyframes>
 	  </br>	  
 	</span>

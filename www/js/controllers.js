@@ -267,9 +267,24 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 .controller('FavoritesCtrl', function($scope, $state, KeyframeService,
 				      $ionicPopup){
 
-    $scope.favorites = KeyframeService.getFavorites;
-    $scope.getShow   = function() { return true; };
-    $scope.toggleShow = function() { };
+    var showFavorites = [];
+    var showKeyframes = [];
+
+    $scope.favorites     = KeyframeService.getFavorites;
+
+    $scope.showKeyframes = function(index) {
+	return showKeyframes[index];
+    };
+    $scope.showFav       = function(index){
+	return showFavorites[index];
+    };
+
+    $scope.toggleShowFav = function(index) { 
+	showFavorites[index] = !showFavorites[index];
+    };
+    $scope.toggleShowKeyframes = function(index){
+	showKeyframes[index] = !showKeyframes[index];
+    };
     
     $scope.loadFavorite = function(index){
 	KeyframeService.loadFavorite(index);
@@ -290,6 +305,13 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     $scope.edit = function($index){
 	alert('Add this!');
     };
+
+    $scope.$watch($scope.favorites, function(newFavs, _){
+	for(var i = 0; i < newFavs.length; i++){
+	    showFavorites[i] = false;
+	    showKeyframes[i] = false;
+	}
+    });
 })
 
 .directive('dslrKeyframes', function() {

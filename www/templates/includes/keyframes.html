@@ -1,9 +1,9 @@
 <div class="item card" ng-repeat="keyframe in keyframes" on-hold="hold(keyframe)" on-touch="touch($index)">
-  Time: {{keyframe.time}} </br>
+  <ion-item>Time: {{keyframe.time}}</ion-item>
   <span ng-show="show($index)">
-    Position: {{keyframe.position}} </br>
-    Pan Angle: {{keyframe.panAngle}} </br>
-    Tilt Angle: {{keyframe.tiltAngle}} </br>
+    <ion-item>Position: {{keyframe.position}}</ion-item>
+    <ion-item>Pan Angle: {{keyframe.panAngle}}</ion-item>
+    <ion-item>Tilt Angle: {{keyframe.tiltAngle}}</ion-item>
   </span>
 </div>
 
