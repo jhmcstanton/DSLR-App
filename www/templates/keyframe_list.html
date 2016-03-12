@@ -25,7 +25,13 @@
       <button class="button button-block button-calm" ng-click="clearFrames()">
 	Clear KeyFrames
       </button>
-      <button class="button button-block button-calm" ng-click="toFavorites()">
+      <button class="button button-block button-calm" 
+	      ng-click="saveToFavorites()"
+	      ng-disabled="!favoritesReady()">
+	Save to Favorites
+      </button>
+      <button class="button button-block button-calm" 
+	      ng-click="toFavorites()">
 	View Favorites
       </button>
     </div>

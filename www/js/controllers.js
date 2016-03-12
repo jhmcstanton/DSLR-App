@@ -41,6 +41,14 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 .controller('KeyframeListCtrl', function($scope, $q, $stateParams, $ionicPopup, 
 					 $state, KeyframeService, Debug, 
 					 BluetoothService, $ionicLoading, $timeout, $interval){
+    $scope.fav         = {
+	name: ''
+    };
+   
+    $scope.favoritesReady = function(){
+	return $scope.keyframes().length > 0;
+    };
+
     $scope.keyframes   = KeyframeService.getKeyframes;
     $scope.showFrames  = [];
     $scope.clearFrames = KeyframeService.clearFrames;
@@ -59,7 +67,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	return $scope.showFrames[index];
     };
     $scope.ready      = function(){
-	return $scope.keyframes().length >= 2 && $scope.paired(); // && BluetoothService.enabled 
+	return $scope.keyframes().length >= 2 && $scope.paired();
     };
 
     $scope.disconnect = BluetoothService.disconnect;
@@ -100,11 +108,34 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     };
   
     $scope.addKeyframe = function() {
-      $state.go('app.single_keyframe');      
+	$state.go('app.single_keyframe');      
     };
 
     $scope.toFavorites = function(){
 	$state.go('app.favorites');
+    };
+
+    $scope.saveToFavorites = function(){
+	var namePopup = $ionicPopup.show({
+	    templateUrl: 'templates/includes/single-field.html',
+	    title: 'Enter Favorite Name',
+	    scope: $scope,
+	    buttons: [
+		{ text: 'Cancel' },
+		{ 
+		    text: 'Save',
+		    type: 'button-positive',
+		    onTap: function(e){
+			if($scope.fav.name === ''){
+			    e.preventDefault();
+			} else {
+			    KeyframeService.pushFavorite($scope.fav.name);
+			    KeyframeService.saveFavorites();
+			}
+		    }
+		}
+	    ]
+	});
     };
 
     $scope.$watch($scope.keyframes, function(newframes, _){

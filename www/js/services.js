@@ -60,6 +60,13 @@ angular.module('dslr.services', ['ngCordova', 'ionic'])
 	saveFavorites: function(){
 	    $window.localStorage[storageKey] = JSON.stringify(favorites);
 	},
+	pushFavorite: function(name){
+	    var fav = {
+		keyframes: keyframes,
+		name: name
+	    };
+	    favorites.push(fav);
+	},
 	clearFrames : function(){
 	    keyframes = [];
 	},
