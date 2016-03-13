@@ -57,6 +57,12 @@ angular.module('dslr.services', ['ngCordova', 'ionic'])
 	    favorites.splice(favIndex, 1);
 	    this.saveFavorites(favorites);
 	},
+	editFavorite: function(keyframe, kIndex, fIndex){
+	    favorites[fIndex].keyframes[kIndex] = keyframe;
+	},
+	editKeyframes: function(keyframe, kIndex){
+	    keyframes[kIndex] = keyframe;
+	},
 	saveFavorites: function(){
 	    $window.localStorage[storageKey] = JSON.stringify(favorites);
 	},
@@ -70,8 +76,8 @@ angular.module('dslr.services', ['ngCordova', 'ionic'])
 	clearFrames : function(){
 	    keyframes = [];
 	},
-	removeFrame : function(frame){ 
-	    keyframes.splice(keyframes.indexOf(frame), 1);
+	removeFrame : function(index){ 
+	    keyframes.splice(index, 1);
 	},
 	// checks to make sure that a newframe does not clash with another frame time
 	uniqueTime : function(newFrame){

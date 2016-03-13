@@ -51,7 +51,7 @@ angular.module('dslr', ['ionic', 'dslr.controllers', 'dslr.services', 'ngCordova
      }
  })
  .state('app.single_keyframe', {
-     url: '/add_keyframe',
+     url: '/add_keyframe/{keyIndex:[0-9]*}/{favIndex:[0-9]*}',
      views: {
 	 'menuContent': {
              templateUrl: 'templates/add_keyframe.html',

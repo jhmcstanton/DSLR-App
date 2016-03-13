@@ -40,7 +40,8 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 
 .controller('KeyframeListCtrl', function($scope, $q, $stateParams, $ionicPopup, 
 					 $state, KeyframeService, Debug, 
-					 BluetoothService, $ionicLoading, $timeout, $interval){
+					 BluetoothService, $ionicLoading 
+					 ){
     $scope.fav         = {
 	name: ''
     };
@@ -71,6 +72,32 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     };
 
     $scope.disconnect = BluetoothService.disconnect;
+    $scope.edit       = function(index){
+	$ionicPopup.show({
+	    title: 'Edit Keyframe',
+	    scope: $scope,
+	    template: 'What would you like to do with this keyframe?',
+	    buttons: [
+		{ text : 'Cancel' },
+		{ 
+		    text: 'Edit',
+		    type: 'button-positive',
+		    onTap: function(e){
+			$state.go('app.single_keyframe', {
+			    keyIndex: index
+			});
+		    }
+		},
+		{
+		    text: 'Delete',
+		    type: 'button-assertive',
+		    onTap: function(e){
+			KeyframeService.removeFrame(index);
+		    }
+		}
+	    ]	    
+	});	
+    };
     $scope.remove     = function(keyframe){
 	$ionicPopup.confirm({
 	    title : 'Confirm Delete',
@@ -195,12 +222,21 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 
 })
 
-.controller('AddKeyframeCtrl', function($scope, $stateParams, $state, $ionicPopup, KeyframeService){
-    $scope.newFrame           = {};
-    $scope.newFrame.time      = "";
-    $scope.newFrame.position  = "";
-    $scope.newFrame.panAngle  = "";
-    $scope.newFrame.tiltAngle = "";
+.controller('AddKeyframeCtrl', function($scope, $stateParams, $state, 
+					$ionicPopup, $stateParams,
+					KeyframeService){
+    alert('keyf: ' + $stateParams.keyIndex + ', favi : ' + $stateParams.favIndex);
+    if($stateParams.favIndex !== ''){
+	$scope.newFrame = 
+	    KeyframeService.getFavorites()[+$stateParams.favIndex][+$stateParams.keyIndex];
+    } else if ($stateParams.keyIndex !== ''){
+	$scope.newFrame = 
+	    KeyframeService.getKeyframes()[+$stateParams.keyIndex];
+    } else {
+	$scope.newFrame = KeyframeService.keyframe('', '', '', '');
+    }
+    
+
     $scope.addKeyframe = function(){
 	var parsedKeyframe = {};
 	for(key in $scope.newFrame){
@@ -212,16 +248,31 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	   !Number.isNaN(parsedKeyframe.panAngle) &&
 	   !Number.isNaN(parsedKeyframe.tiltAngle)){
 
-	    if(KeyframeService.uniqueTime(parsedKeyframe)){		
-		KeyframeService.appendKeyframe(parsedKeyframe, 10);
-		$scope.newFrame = {};
-		$state.go('app.keyframes');
-	    } else {
-		$ionicPopup.alert({
-		    title : 'Malformed Keyframe!',
-		    template : 'This frame time clashes with another'
-		});
+	    // default case, just building a new set of keyframes
+	    if($stateParams.keyIndex === ''){ 
+		if(KeyframeService.uniqueTime(parsedKeyframe)){
+		    KeyframeService.appendKeyframe(parsedKeyframe);
+		} else {
+		    $ionicPopup.alert({
+			title : 'Malformed Keyframe!',
+			template : 'This frame time clashes with another'
+		    });
+		}
+	    } else if($stateParams.favIndex === ''){ 
+		// editing the current keyframe set
+		KeyframeService.editKeyframes(
+		    parsedKeyframe,
+		    $stateParams.keyIndex
+		);
+	    } else { // editing a favorite
+		KeyframeService.editFavorite(
+		    parsedKeyframe,
+		    $stateParams.keyIndex,
+		    $stateParams.favIndex
+		);
 	    }
+	    $scope.newFrame = {};
+	    $state.go('app.keyframes');
 	}else {
 	    $ionicPopup.alert({
 		title: "Malformed Keyframe",
@@ -231,7 +282,9 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     }; 
 })
 
-.controller('BluetoothDisplayCtrl', function($scope, BluetoothService, $ionicLoading, $state, $timeout, $ionicPopup){
+.controller('BluetoothDisplayCtrl', function($scope, BluetoothService, 
+					     $ionicLoading, $state, 
+					     $timeout, $ionicPopup){
     $scope.devices      = BluetoothService.getDevices;
     $scope.showDevices  = [];
         
@@ -295,8 +348,8 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     });
 })
 
-.controller('FavoritesCtrl', function($scope, $state, KeyframeService,
-				      $ionicPopup){
+.controller('FavoritesCtrl', function($scope, $state, 
+				      KeyframeService, $ionicPopup){
 
     var showFavorites = [];
     var showKeyframes = [];
@@ -333,8 +386,13 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	});
     };
 
-    $scope.edit = function($index){
-	alert('Add this!');
+    $scope.edit = function(fIndex){
+	return function(kIndex){
+	    $state.go('app.single_keyframe', {
+		keyIndex: kIndex,
+		favIndex: fIndex
+	    });
+	};
     };
 
     $scope.$watch($scope.favorites, function(newFavs, _){
