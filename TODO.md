@@ -34,7 +34,7 @@ priority)~~
 
      1. Possibly convert localStorage use to sqlite if problems occur.
 
-     1. Fix ionicPopup css to handle 3 horizontal buttons (for keyframe editing).
+     1. ~~Fix ionicPopup css to handle 3 horizontal buttons (for keyframe editing).~~
 
    - Updates
      1. Add ~~editing~~ / ~~deleting~~ of existing keyframes

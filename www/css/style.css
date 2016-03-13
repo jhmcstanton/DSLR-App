@@ -1,1 +1,4 @@
 /* Empty. Add your own CSS if you like */
+.popup-container .popup {
+    width: 300px;
+}
