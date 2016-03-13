@@ -225,7 +225,6 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 .controller('AddKeyframeCtrl', function($scope, $stateParams, $state, 
 					$ionicPopup, $stateParams,
 					KeyframeService){
-    alert('keyf: ' + $stateParams.keyIndex + ', favi : ' + $stateParams.favIndex);
     if($stateParams.favIndex !== ''){
 	$scope.newFrame = 
 	    KeyframeService.getFavorites()[+$stateParams.favIndex][+$stateParams.keyIndex];
