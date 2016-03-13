@@ -2,16 +2,20 @@
 <ion-content>
   <div class="list list-inset">
     <label class="item item-input">
-      <input type="number" placeholder="Time" ng-model="newFrame.time">
+      <span class="input-label">Time</span>
+      <input type="number" ng-model="newFrame.time">
     </label>
     <label class="item item-input">
-      <input type="number" placeholder="Position" ng-model="newFrame.position">
+      <span class="input-label">Position</span>
+      <input type="number" ng-model="newFrame.position">
     </label>
     <label class="item item-input">
-      <input type="number" placeholder="Pan Angle" ng-model="newFrame.panAngle">
+      <span class="input-label">Pan Angle</span>
+      <input type="number" ng-model="newFrame.panAngle">
     </label>
     <label class="item item-input">
-      <input type="number" placeholder="Tilt Angle" ng-model="newFrame.tiltAngle">
+      <span class="input-label">Tilt Angle</span>
+      <input type="number" ng-model="newFrame.tiltAngle">
     </label>
     <button class="button button-block button-calm" ng-click="addKeyframe()">
       Add

@@ -209,15 +209,20 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
       }
   });
 
-  // watch the length of the keyframes - first function is the watching function, second is the comparator
-  $scope.$watch(function(){
-      return $scope.keyframes().length;
-  }, function(newLength, _) {
-      if(newLength >= 2){ // minimum of 2 frames are required to transmit
-	  $scope.totalDuration = $scope.keyframes()[newLength - 1].time - $scope.keyframes()[0].time;
-      } else { 
-	  $scope.totalDuration = 0;
-      }
+    $scope.totalDuration = 0;
+    var findDuration = function(){
+	var frames = $scope.keyframes();
+	var len    = frames.length;
+	if(len === 0){
+	    return 0;
+	} else {
+	    return frames[len - 1].time - frames[0].time;
+	}
+    };
+    $scope.$watch(function(){
+	return findDuration();
+    }, function(newDuration, _) {
+	$scope.totalDuration = newDuration;
   });
 
 })
@@ -247,31 +252,33 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	   !Number.isNaN(parsedKeyframe.panAngle) &&
 	   !Number.isNaN(parsedKeyframe.tiltAngle)){
 
-	    // default case, just building a new set of keyframes
-	    if($stateParams.keyIndex === ''){ 
-		if(KeyframeService.uniqueTime(parsedKeyframe)){
+	    if(KeyframeService.uniqueTime(parsedKeyframe,
+					  $stateParams.keyIndex,
+					  $stateParams.favIndex)){
+		// default case, just building a new set of keyframes
+		if($stateParams.keyIndex === ''){ 
 		    KeyframeService.appendKeyframe(parsedKeyframe);
-		} else {
-		    $ionicPopup.alert({
-			title : 'Malformed Keyframe!',
-			template : 'This frame time clashes with another'
-		    });
+		} else if($stateParams.favIndex === ''){ 
+		    // editing the current keyframe set
+		    KeyframeService.editKeyframes(
+			parsedKeyframe,
+			$stateParams.keyIndex
+		    );
+		} else { // editing a favorite
+		    KeyframeService.editFavorite(
+			parsedKeyframe,
+			$stateParams.keyIndex,
+			$stateParams.favIndex
+		    );
 		}
-	    } else if($stateParams.favIndex === ''){ 
-		// editing the current keyframe set
-		KeyframeService.editKeyframes(
-		    parsedKeyframe,
-		    $stateParams.keyIndex
-		);
-	    } else { // editing a favorite
-		KeyframeService.editFavorite(
-		    parsedKeyframe,
-		    $stateParams.keyIndex,
-		    $stateParams.favIndex
-		);
+		$scope.newFrame = {};
+		$state.go('app.keyframes');
+	    } else {
+		$ionicPopup.alert({
+		    title : 'Malformed Keyframe!',
+		    template : 'This frame time clashes with another'
+		});
 	    }
-	    $scope.newFrame = {};
-	    $state.go('app.keyframes');
 	}else {
 	    $ionicPopup.alert({
 		title: "Malformed Keyframe",

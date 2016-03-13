@@ -9,6 +9,14 @@ priority)~~
    1. ~~Without *direct* time collisions~~
    1. Within acceptable parameters
 
+1. Bug / Behavior Fix
+
+   1. ~~Add keyframe view only checks for unique times for new keyfames - when
+      editing the current keyframe list or a favorite keyframe list a clash
+      is never checked for.~~
+
+      See $scope.addKeyFrame in that AddKeyframeCtrl (controllers.js)
+
 1. GUI Updates and Cleanup
 
    - Cleanup
@@ -25,6 +33,8 @@ priority)~~
         keyframe constructor from keyframeservice. 
 
      1. Possibly convert localStorage use to sqlite if problems occur.
+
+     1. Fix ionicPopup css to handle 3 horizontal buttons (for keyframe editing).
 
    - Updates
      1. Add ~~editing~~ / ~~deleting~~ of existing keyframes

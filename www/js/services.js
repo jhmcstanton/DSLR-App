@@ -59,9 +59,12 @@ angular.module('dslr.services', ['ngCordova', 'ionic'])
 	},
 	editFavorite: function(keyframe, kIndex, fIndex){
 	    favorites[fIndex].keyframes[kIndex] = keyframe;
+	    favorites[fIndex].keyframes = 
+		$filter('orderBy')(favorites[fIndex].keyframes, 'time');
 	},
 	editKeyframes: function(keyframe, kIndex){
 	    keyframes[kIndex] = keyframe;
+	    keyframes = $filter('orderBy')(keyframes, 'time');
 	},
 	saveFavorites: function(){
 	    $window.localStorage[storageKey] = JSON.stringify(favorites);
@@ -80,11 +83,20 @@ angular.module('dslr.services', ['ngCordova', 'ionic'])
 	    keyframes.splice(index, 1);
 	},
 	// checks to make sure that a newframe does not clash with another frame time
-	uniqueTime : function(newFrame){
-	    for(var i = 0; i < keyframes.length; i++){
-		var frame = keyframes[i];
-		if(frame.time === newFrame.time){
-		    return false;
+	uniqueTime : function(newFrame, skipIndex, favIndex){
+	    var frames = [];
+	    if(favIndex !== ''){
+		frames = favorites[+favIndex].keyframes;
+	    } else {
+		frames = keyframes;
+	    }
+	    for(var i = 0; i < frames.length; i++){
+		// skipindex is useful for editing
+		if(skipIndex === '' || i !== +skipIndex){ 
+		    var frame = frames[i];
+		    if(frame.time === newFrame.time){
+			return false;
+		    }
 		}
 	    }
 	    return true;

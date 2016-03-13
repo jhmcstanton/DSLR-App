@@ -7,7 +7,16 @@
 		      show="getShow">
       </dslr-keyframes>
       </br>
-      <ion-item> Total Duration: {{totalDuration}}</ion-item>
+      <ion-item> 
+	<div class="row">
+	  <div class="col">
+	    Total Duration: 
+	  </div>
+	  <div class="col">
+	    {{totalDuration}}
+	  </div>
+	</div>
+      </ion-item>
       <button class="button button-block button-calm" ng-click="addKeyframe()">
 	Add Keyframe
       </button>      
