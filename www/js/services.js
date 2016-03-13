@@ -36,7 +36,8 @@ angular.module('dslr.services', ['ngCordova', 'ionic'])
     return {
 	init: function(){
 	    favorites = $window.localStorage[storageKey];
-	    if(favorites === 'undefined'){  // nothing has been saved ever
+	    if(favorites === 'undefined' || 
+	       typeof favorites == 'undefined'){  // nothing has been saved ever
 		favorites = defaultFavorites; 
 		this.saveFavorites();
 	    } else {
