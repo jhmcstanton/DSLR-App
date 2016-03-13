@@ -1,6 +1,7 @@
 language: android
 android:
-- android-23
+  components:
+    - android-23
 before_install:
 - npm update
 - npm install npm
