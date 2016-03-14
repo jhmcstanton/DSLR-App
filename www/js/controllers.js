@@ -244,7 +244,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     $scope.addKeyframe = function(){
 	var parsedKeyframe = {};
 	for(key in $scope.newFrame){
-	    parsedKeyframe[key] = Number.parseInt($scope.newFrame[key]);
+	    parsedKeyframe[key] = parseInt($scope.newFrame[key]);
 	}
 	
 	if(!Number.isNaN(parsedKeyframe.time) &&
