@@ -210,17 +210,8 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
   });
 
     $scope.totalDuration = 0;
-    var findDuration = function(){
-	var frames = $scope.keyframes();
-	var len    = frames.length;
-	if(len === 0){
-	    return 0;
-	} else {
-	    return frames[len - 1].time - frames[0].time;
-	}
-    };
     $scope.$watch(function(){
-	return findDuration();
+	return KeyframeService.findDuration();
     }, function(newDuration, _) {
 	$scope.totalDuration = newDuration;
   });
@@ -324,17 +315,6 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 
     };
 
-    // return back to the keyframe screen if no devices are found!
-    $scope.$watch(function(){
-	return $scope.devices().length;
-    }, function(newLen, _){
-	if(newLen == 0){
-	    $ionicPopup.alert({
-		title: "No Devices Found!",
-		template: "Try checking your Bluetooth settings and that the PB&J Camera Dolly System is powered on."
-	    });
-	}
-    });
     $scope.$watch(function(){
 	return $scope.connecting;
     }, function(newConnecting, oldConnecting){
@@ -359,8 +339,13 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 
     var showFavorites = [];
     var showKeyframes = [];
+    var durations     = []
 
     $scope.favorites     = KeyframeService.getFavorites;
+
+    $scope.getDuration   = function(index){
+	return durations[index];
+    };
 
     $scope.showKeyframes = function(index) {
 	return showKeyframes[index];
@@ -405,6 +390,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	for(var i = 0; i < newFavs.length; i++){
 	    showFavorites[i] = false;
 	    showKeyframes[i] = false;
+	    durations[i]     = KeyframeService.findDuration(i);
 	}
     });
 })

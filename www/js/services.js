@@ -77,6 +77,20 @@ angular.module('dslr.services', ['ngCordova', 'ionic'])
 	    };
 	    favorites.push(fav);
 	},
+	findDuration: function(favIndex){
+	    var frames = [];
+	    if(typeof favIndex === 'undefined'){ 
+		frames = keyframes;
+	    } else {
+		frames = favorites[+favIndex].keyframes;
+	    }
+	    var len    = frames.length;
+	    if(len === 0){
+		return 0;
+	    } else {
+		return frames[len - 1].time - frames[0].time;
+	    }	
+	},
 	clearFrames : function(){
 	    keyframes = [];
 	},

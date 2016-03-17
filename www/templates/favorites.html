@@ -14,7 +14,15 @@
 			  touch="toggleShowKeyframes"
 			  show="showKeyframes">
 	  </dslr-keyframes>
-	  </br>	  
+	  </br>
+	  <div class="row">
+	    <div class="col">
+	     Total Duration:
+	    </div>
+	    <div class="col">
+	      {{ getDuration($index) }}
+	    </div>
+	  </div>
 	</span>
 	<button class="button button-block button-calm" 
 		on-touch="loadFavorite($index)">

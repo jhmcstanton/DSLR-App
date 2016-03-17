@@ -11,6 +11,10 @@
 	  </span>
 	  <button class="button button-block button-energized" ng-click="connect(device)">Connect</button>
 	</ion-item>
+      <ion-item class="item item-text-wrap" ng-show="devices().length == 0">
+	<h1>No Devices Found!</h1> </br>
+	Try checking your Bluetooth settings and that the PB&J Camera Dolly System is powered on.
+      </ion-item>
       </ion-list>
     </div>
   </ion-content>
