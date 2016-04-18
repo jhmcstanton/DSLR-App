@@ -436,7 +436,11 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
     // absolutely not guaranteed to be safe. 
     var clearForm = function(form){	
 	for(key in form){
-	    form[key] = '';
+	    if(typeof form[key] === 'object'){
+		clearForm(form[key])
+	    } else {
+		form[key] = '';
+	    }
 	}
     };
 
