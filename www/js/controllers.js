@@ -10,6 +10,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 
     $scope.loggedIn = BackendService.getLoggedIn;
     $scope.username = BackendService.getUsername;
+    $scope.logout   = BackendService.logout;
 
 
     $scope.loginForm = function(){

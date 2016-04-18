@@ -341,37 +341,36 @@ angular.module('dslr.services', ['ngCordova', 'ionic', 'angular-jwt'])
     // if this is on a mobile device then it is in prod and needs the prod environment,
     // otherwise it can just use the localhost (port may need to be changed though)
 
+    var username = '';
+    var jwt      = null;
+
     var toBasicAuthentication = function(username, password){
 	// btoa is provided natively
 	return 'Basic ' + btoa(username + ':' + password);
     }
 
     // returns true if jwt is expired OR null
-    var checkExp              = function(){
+    var checkExp              = function(){	
 	return jwt === null || jwtHelper.isTokenExpired(jwt);
     }
 
     var baseUrl = ionic.Platform.isAndroid() || ionic.Platform.isIOS() ? 
 	"https://ancient-falls-78055.herokuapp.com" : "http://localhost:8080";
 
-    var jwt     = null;
-/*    return ({
-	getLoggedIn: function()
-	{
-	    return loggedIn;
+    return ({
+	getLoggedIn : function()
+	{	    
+	    return !checkExp();
 	}
 	,
-	getUsername: function()
+	getUsername : function()
 	{
 	    return username;
 	}
 	,
-	getApiAllByUserId: function()
-	{
-	    return $http(
-		{ url: baseUrl + '/api/all/' + encodeURIComponent(userId) + ''
-		  , method: 'GET'
-		});
+	logout : function(){
+	    username = '';
+	    jwt      = null;
 	}
 	,
 	postApiUserNew: function(body)
@@ -381,60 +380,25 @@ angular.module('dslr.services', ['ngCordova', 'ionic', 'angular-jwt'])
 		  , data: JSON.stringify(body)
 		  , contentType: 'application/json'
 		  , method: 'POST'
-		}).then(function(res){
-		    loggedIn = true;
-		    username = body.username;
-		    alert('data: ' + res.data);
-		    for(k in res.data){
-			alert(k + ': ' + res.data[k]);
-		    }
-		    userId   = res.data;
+		}).then(function(resp){
+		    username = body[0].username;
+		    return resp;
 		});
 	}
 	,
-	getApiSingleByUserIdByFrameListID: function(userId, frameListID)
-	{
-	    return $http(
-		{ url: baseUrl + '/api/single/' + encodeURIComponent(userId) + '/' + encodeURIComponent(frameListID) + ''
-		  , method: 'GET'
-		});
-	}
-	,
-	postApiNewByUserId: function(userId, body)
-	{
-	    return $http(
-		{ url: baseUrl + '/api/new/' + encodeURIComponent(userId) + ''
-		  , data: JSON.stringify(body)
-		  , contentType: 'application/json'
-		  , method: 'POST'
-		});
-	}
-    });*/
-
-    return ({
-	postApiUserNew: function(body)
-	{
-	    alert(baseUrl + '/api/user/new');
-	    return $http(
-		{ url: baseUrl + '/api/user/new'
-		  , data: JSON.stringify(body)
-		  , contentType: 'application/json'
-		  , method: 'POST'
-		});
-	}
-	,
-	loginUser : function(username, password){
-	    alert(baseUrl + '/api/user/login');
+	loginUser : function(usernameField, passwordField){
 
 	    return $http(
 		{ url: baseUrl + '/api/user/login'
 		  , method: 'GET'
 		  , headers : {
-		      'Authorization' : toBasicAuthentication(username, password)
+		      'Authorization' : toBasicAuthentication(usernameField, passwordField)
 		  }
 		}
 	    ).then(function(resp){
-		jwt = resp.data;
+		jwt      = resp.data;
+		username = usernameField;
+		return resp;
 	    });
 	}
 	,
