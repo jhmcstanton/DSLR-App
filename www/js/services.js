@@ -343,7 +343,7 @@ angular.module('dslr.services', ['ngCordova', 'ionic', 'angular-jwt'])
 
     var toBasicAuthentication = function(username, password){
 	// btoa is provided natively
-	return 'Basic' + btoa(username + ':' + password);
+	return 'Basic ' + btoa(username + ':' + password);
     }
 
     // returns true if jwt is expired OR null

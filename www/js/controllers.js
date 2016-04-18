@@ -466,6 +466,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	    .then(function(res){
 		clearForm($scope.newUser);
 		clearForm($scope.loginForm);
+		$state.go('app.keyframes');
 	    }, function(res){
 		alert('failed to login user');
 		for(k in res){
