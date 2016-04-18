@@ -1,4 +1,4 @@
-angular.module('dslr.services', ['ngCordova', 'ionic'])
+angular.module('dslr.services', ['ngCordova', 'ionic', 'angular-jwt'])
 
 .service('KeyframeService', function($q, $filter, $window){
     var keyframe = function(time, position, pan, tilt){
@@ -76,6 +76,9 @@ angular.module('dslr.services', ['ngCordova', 'ionic'])
 		name: name
 	    };
 	    favorites.push(fav);
+	},
+	addWholeSet: function(set){
+	    favorites.push(set);
 	},
 	findDuration: function(favIndex){
 	    var frames = [];
@@ -332,4 +335,147 @@ angular.module('dslr.services', ['ngCordova', 'ionic'])
 		
 	}
     };
+})
+
+.service('BackendService', function($http, jwtHelper) {
+    // if this is on a mobile device then it is in prod and needs the prod environment,
+    // otherwise it can just use the localhost (port may need to be changed though)
+
+    var toBasicAuthentication = function(username, password){
+	// btoa is provided natively
+	return 'Basic' + btoa(username + ':' + password);
+    }
+
+    // returns true if jwt is expired OR null
+    var checkExp              = function(){
+	return jwt === null || jwtHelper.isTokenExpired(jwt);
+    }
+
+    var baseUrl = ionic.Platform.isAndroid() || ionic.Platform.isIOS() ? 
+	"https://ancient-falls-78055.herokuapp.com" : "http://localhost:8080";
+
+    var jwt     = null;
+/*    return ({
+	getLoggedIn: function()
+	{
+	    return loggedIn;
+	}
+	,
+	getUsername: function()
+	{
+	    return username;
+	}
+	,
+	getApiAllByUserId: function()
+	{
+	    return $http(
+		{ url: baseUrl + '/api/all/' + encodeURIComponent(userId) + ''
+		  , method: 'GET'
+		});
+	}
+	,
+	postApiUserNew: function(body)
+	{
+	    return $http(
+		{ url: baseUrl + '/api/user/new'
+		  , data: JSON.stringify(body)
+		  , contentType: 'application/json'
+		  , method: 'POST'
+		}).then(function(res){
+		    loggedIn = true;
+		    username = body.username;
+		    alert('data: ' + res.data);
+		    for(k in res.data){
+			alert(k + ': ' + res.data[k]);
+		    }
+		    userId   = res.data;
+		});
+	}
+	,
+	getApiSingleByUserIdByFrameListID: function(userId, frameListID)
+	{
+	    return $http(
+		{ url: baseUrl + '/api/single/' + encodeURIComponent(userId) + '/' + encodeURIComponent(frameListID) + ''
+		  , method: 'GET'
+		});
+	}
+	,
+	postApiNewByUserId: function(userId, body)
+	{
+	    return $http(
+		{ url: baseUrl + '/api/new/' + encodeURIComponent(userId) + ''
+		  , data: JSON.stringify(body)
+		  , contentType: 'application/json'
+		  , method: 'POST'
+		});
+	}
+    });*/
+
+    return ({
+	postApiUserNew: function(body)
+	{
+	    alert(baseUrl + '/api/user/new');
+	    return $http(
+		{ url: baseUrl + '/api/user/new'
+		  , data: JSON.stringify(body)
+		  , contentType: 'application/json'
+		  , method: 'POST'
+		});
+	}
+	,
+	loginUser : function(username, password){
+	    alert(baseUrl + '/api/user/login');
+
+	    return $http(
+		{ url: baseUrl + '/api/user/login'
+		  , method: 'GET'
+		  , headers : {
+		      'Authorization' : toBasicAuthentication(username, password)
+		  }
+		}
+	    ).then(function(resp){
+		jwt = resp.data;
+	    });
+	}
+	,
+	getApiAll: function()
+	{
+	    if(checkExp()){
+		return null;
+	    }
+	    return $http(
+		{ url: baseUrl + '/api/all'
+		  , headers: { "token-auth": jwt }
+		  , method: 'GET'
+		});
+	}
+	,
+	getApiSingleByFrameListID: function(frameListID)
+	{
+	    if(checkExp()){
+		return null;
+	    }
+	    return $http(
+		{ url: baseUrl + '/api/single/' + encodeURIComponent(frameListID) + ''
+		  , headers: { "token-auth": jwt }
+		  , method: 'GET'
+		});
+	}
+	,
+	postApiNew: function(body)
+	{
+	    if(checkExp()){
+		return null;
+	    }
+	    return $http(
+		{ url: baseUrl + '/api/new'
+		  , data: JSON.stringify(body)
+		  , contentType: 'application/json'
+		  , headers: { "token-auth": jwt }
+		  , method: 'POST'
+		});
+	}
+    });
+
+
 });

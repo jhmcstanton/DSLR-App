@@ -1,10 +1,20 @@
 angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, BluetoothService, $ionicPopup, Debug) {
-    var textarea = document.getElementById("logRegion");
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, 
+				BluetoothService, BackendService, 
+				$ionicPopup, Debug, $state) {
+    var textarea = document.getElementById("logRegion");    
 
     $scope.debug    = false; 
     $scope.debugLog = Debug.getDebugLog();
+
+    $scope.loggedIn = BackendService.getLoggedIn;
+    $scope.username = BackendService.getUsername;
+
+
+    $scope.loginForm = function(){
+	$state.go('app.login');
+    };
 
     $scope.clearDebugLog = function(){
 	Debug.clearLog();
@@ -335,7 +345,8 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 })
 
 .controller('FavoritesCtrl', function($scope, $state, 
-				      KeyframeService, $ionicPopup){
+				      KeyframeService, $ionicPopup,
+				      BackendService){
 
     var showFavorites = [];
     var showKeyframes = [];
@@ -377,6 +388,15 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	});
     };
 
+    $scope.getFavorites  = function() {
+	// requires previous login
+	BackendService.getApiAll().then(function(res){
+	    for(i = 0; i < res.data.length; i++){
+		KeyframeService.addWholeSet(res.data[i]);
+	    } 
+	});
+    }
+
     $scope.edit = function(fIndex){
 	return function(kIndex){
 	    $state.go('app.single_keyframe', {
@@ -393,6 +413,81 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	    durations[i]     = KeyframeService.findDuration(i);
 	}
     });
+})
+
+.controller('LoginCtrl', function($scope, $ionicPopup, BackendService, $state){
+
+    var validateForm = function(form){
+	for(key in form){
+	    if(typeof (form[key]) === 'object' && !validateForm(form[key])){
+		return false;
+	    }else if(typeof form[key] !== 'undefined' && form[key].length === 0){
+		$ionicPopup.alert({
+		    title : 'Malformed Form',
+		    template : 'All fields are required!'
+		});
+		return false;
+	    }    
+	}
+	return true;
+    };
+
+    // clear the form to get password and other info out of memory
+    // absolutely not guaranteed to be safe. 
+    var clearForm = function(form){	
+	for(key in form){
+	    form[key] = '';
+	}
+    };
+
+    $scope.newUser = {
+	userData : {
+	    username : '',
+	    email    : '',
+	    firstName: '',
+	    lastName : ''
+	},
+	password : ''
+    };
+    $scope.loginForm = {
+	username: '',
+	password: ''
+    };
+
+    $scope.login = function(){
+	if(validateForm($scope.loginForm)){
+
+	    BackendService.loginUser($scope.loginForm.username, 
+				     $scope.loginForm.password)
+	    .then(function(res){
+		clearForm($scope.newUser);
+		clearForm($scope.loginForm);
+	    }, function(res){
+		alert('failed to login user');
+		for(k in res){
+		    alert(k + ' : ' + res[k]);
+		}
+	    });
+	}
+    };
+
+    $scope.signup = function(){
+	// slight validation
+	if(validateForm($scope.newUser)){
+	    
+	    BackendService.postApiUserNew([$scope.newUser.userData, $scope.newUser.password])
+		.then(function(res){
+		    clearForm($scope.newUser);
+		    clearForm($scope.loginForm);
+		    $state.go('app.keyframes');
+		}, function(res){
+		alert('failed to create user: ');
+		for(k in res){
+		    alert(k + ' : ' + res[k]);
+		}
+		});
+	}
+    };
 })
 
 .directive('dslrKeyframes', function() {

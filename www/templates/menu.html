@@ -21,8 +21,14 @@
       <h1 class="title">Settings</h1>
     </ion-header-bar>
     <ion-content>
-      <ion-toggle ng-model="debug" toggle-class="toggle-calm" ng-change="toggleDebug()">Carriage Debug</ion-toggle>
-    </ion-content>
+      <button ng-show="loggedIn()" ng-click="logOut()" class="button button-block button-assertive icon-left ion-power">
+	{{ username() }}
+      </button>
+      <button ng-hide="loggedIn()" ng-click="loginForm()" class="button button-block button-calm icon-left ion-person-add">
+	Log in or Sign Up
+      </button>
+      <ion-toggle ng-model="debug" toggle-class="toggle-calm" ng-change="toggleDebug()">Carriage Debug</ion-toggle>      
+    </ion-content>    
   </ion-side-menu>
 
   <ion-side-menu side="right">

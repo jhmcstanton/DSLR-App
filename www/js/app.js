@@ -59,6 +59,15 @@ angular.module('dslr', ['ionic', 'dslr.controllers', 'dslr.services', 'ngCordova
 	 }
     }  
   })
+  .state('app.login', {
+      url: '/login',
+      views: {
+	  'menuContent': {
+	      templateUrl: 'templates/loginForm.html',
+	      controller : 'LoginCtrl'
+	  }
+      }
+  })
   .state('app.favorites', {
       url: '/favorites',
       views: {

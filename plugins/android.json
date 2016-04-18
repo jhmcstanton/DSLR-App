@@ -16,6 +16,9 @@
         "cordova-plugin-device": {
             "PACKAGE_NAME": "com.ionicframework.dslr387101"
         },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.ionicframework.dslr387101"
+        },
         "ionic-plugin-keyboard": {
             "PACKAGE_NAME": "com.ionicframework.dslr387101"
         }
