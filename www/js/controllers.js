@@ -502,10 +502,7 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 		    clearForm($scope.loginForm);
 		    $state.go('app.keyframes');
 		}, function(res){
-		alert('failed to create user: ');
-		for(k in res){
-		    alert(k + ' : ' + res[k]);
-		}
+		alert('failed to create user, either username or email is already in use ');
 		});
 	}
     };

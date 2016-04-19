@@ -387,6 +387,7 @@ angular.module('dslr.services', ['ngCordova', 'ionic', 'angular-jwt'])
 		  , method: 'POST'
 		}).then(function(resp){
 		    username = body[0].username;
+		    jwt      = resp.data;
 		    return resp;
 		});
 	}
