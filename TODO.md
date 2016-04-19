@@ -54,7 +54,7 @@ priority)~~
 
 1. API Handling
 
-   1. ~~Add Create User and Login View ~~
+   1. ~~Add Create User and Login View~~
 
       This can be found in the side menu now and runs against our [backend API](http://www.github.com/jhstanton/DSLR-App-API)
    
