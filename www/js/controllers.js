@@ -10,7 +10,10 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 
     $scope.loggedIn = BackendService.getLoggedIn;
     $scope.username = BackendService.getUsername;
-    $scope.logout   = BackendService.logout;
+    $scope.logout   = function(){
+	BackendService.logout();
+	
+    };
 
 
     $scope.loginForm = function(){
@@ -393,10 +396,24 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 	// requires previous login
 	BackendService.getApiAll().then(function(res){
 	    for(i = 0; i < res.data.length; i++){
-		KeyframeService.addWholeSet(res.data[i]);
+		KeyframeService.addWholeSet(res.data[i][1]);
 	    } 
+	}, function(res){
+		$ionicPopup.alert({
+		    title : 'Unable to Get Keyframes',
+		    template : 'Make sure you are logged in!'
+		});
 	});
     }
+
+    $scope.saveRemotely = function(kIndex){
+	BackendService.postApiNew($scope.favorites()[kIndex]).
+	    then(function(res){
+		alert('Stored Keyframe Set Remotely!');
+	    }, function(res){
+		alert('Error Storing Keyframe Set Remotely, Error: ' + res.status);
+	    });
+    };
 
     $scope.edit = function(fIndex){
 	return function(kIndex){
@@ -469,10 +486,8 @@ angular.module('dslr.controllers', ['dslr.services', 'ngCordova'])
 		clearForm($scope.loginForm);
 		$state.go('app.keyframes');
 	    }, function(res){
-		alert('failed to login user');
-		for(k in res){
-		    alert(k + ' : ' + res[k]);
-		}
+		alert('Username or Password Incorrect');
+		clearForm($scope.loginForm);
 	    });
 	}
     };

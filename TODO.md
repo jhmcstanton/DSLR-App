@@ -51,3 +51,14 @@ priority)~~
 
    1. Internal app logging
    1. Logging from Arduino (requires changes to Arduino)
+
+1. API Handling
+
+   1. ~~Add Create User and Login View ~~
+
+      This can be found in the side menu now and runs against our [backend API](http://www.github.com/jhstanton/DSLR-App-API)
+   
+   1. Add Ability to Store and Download Keyframes Remotely
+
+      Mostly done! This is possible now (both storing and retrieving). However, this could be smarter. Keyframe sets
+      should be stored locally with their backend key if possible so that duplicates are not shown when retrieving keyframes.

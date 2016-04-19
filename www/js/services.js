@@ -78,7 +78,12 @@ angular.module('dslr.services', ['ngCordova', 'ionic', 'angular-jwt'])
 	    favorites.push(fav);
 	},
 	addWholeSet: function(set){
-	    favorites.push(set);
+	    var sortedSet = {
+		name: set.name,
+		keyframes: $filter('orderBy')(set.keyframes, 'time')
+	    };
+
+	    favorites.push(sortedSet);
 	},
 	findDuration: function(favIndex){
 	    var frames = [];
@@ -88,7 +93,7 @@ angular.module('dslr.services', ['ngCordova', 'ionic', 'angular-jwt'])
 		frames = favorites[+favIndex].keyframes;
 	    }
 	    var len    = frames.length;
-	    if(len === 0){
+	    if(len < 2){
 		return 0;
 	    } else {
 		return frames[len - 1].time - frames[0].time;
