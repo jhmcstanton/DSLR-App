@@ -134,7 +134,9 @@ angular.module('dslr.services', ['ngCordova', 'ionic', 'angular-jwt'])
 	},
 	buildKeyframeBuffer: function(frames){
 	    // build the JS string
-	    var buffersize = 20; // nrf8001 buffer size is only 20 bytes :(
+	    var buffersize    = 20; // nrf8001 buffer size is only 20 bytes :(
+	    var numCharsInt   = 5;
+	    var numCharsFloat = 7;
 
 	    // helper for chunking large strings into strings of length *length*
 	    // http://stackoverflow.com/questions/7033639/split-large-string-in-n-size-chunks-in-javascript
@@ -158,10 +160,10 @@ angular.module('dslr.services', ['ngCordova', 'ionic', 'angular-jwt'])
 
 	    frameStr = frames.length.toString() + "|";
 	    frames.forEach(function(frame){
-		frameStr += padZeros(frame.position, 3) + "|" + 
-		    padZeros(frame.panAngle, 2)   + "|" + 
-		    padZeros(frame.tiltAngle, 6)  + "|" + 
-		    padZeros(frame.time, 6) + "|"; 
+		frameStr += padZeros(frame.position, numCharsFloat) + "|" + 
+		    padZeros(frame.panAngle, numCharsInt)   + "|" + 
+		    padZeros(frame.tiltAngle, numCharsInt)  + "|" + 
+		    padZeros(frame.time, numCharsFloat) + "|"; 
 	    });
 
 	    // now convert it to a buffer that the BLE interface can handle
